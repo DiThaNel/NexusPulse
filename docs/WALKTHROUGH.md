@@ -79,7 +79,7 @@ Implementar un flujo de trabajo visual completo de gestión de tareas con tecnol
   * `KanbanBoard`: Contenedor principal orquestador de `DndContext` con sensor de puntero con restricción de activación (`distance: 5px`) para evitar que un clic accidental inicie un arrastre, y sensor de teclado accesible.
   * `KanbanColumn`: Columnas droppable con `SortableContext` y contadores en vivo.
   * `KanbanCard`: Tarjetas ordenables con micro-animaciones, badges de prioridad y avatar de asignación.
-  * `KanbanToolbar`: Barra de controles con buscador en tiempo real, filtros y botón `+ Nueva Tarea`.
+  * `KanbanToolbar`: Barra de controles con buscador en tiempo real, filtros refinados (fondo integrado `bg-background`, bordes `border-border/60`, chevron minimalista y opciones `bg-popover` eliminando el gris genérico del navegador) y botón `+ Nueva Tarea`.
   * `TaskModal`: Formulario modal accesible para creación y edición validado en tiempo real con Zod.
 * **Enforcement de RBAC**:
   * Si el rol activo es `viewer`, la interfaz bloquea el arrastre (`cursor-default`), oculta botones de creación/edición/borrado y activa un banner informativo.
