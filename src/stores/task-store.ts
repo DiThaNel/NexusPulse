@@ -117,23 +117,12 @@ interface TaskState {
   openCreateModal: (status?: TaskStatus) => void;
   openEditModal: (task: Task) => void;
   closeTaskModal: () => void;
+
+  // Hydration sync action
+  initializeFromStorage: () => void;
 }
 
 export const useTaskStore = create<TaskState>((set, get) => {
-  // Load tasks from localStorage if available
-  let initialTasks: Task[] = INITIAL_TASKS;
-  if (typeof window !== "undefined") {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          initialTasks = parsed;
-        }
-      }
-    } catch {}
-  }
-
   const saveToStorage = (updatedTasks: Task[]) => {
     if (typeof window !== "undefined") {
       try {
@@ -143,13 +132,27 @@ export const useTaskStore = create<TaskState>((set, get) => {
   };
 
   return {
-    tasks: initialTasks,
+    tasks: INITIAL_TASKS,
     searchQuery: "",
     priorityFilter: "all",
     assigneeFilter: "all",
     isTaskModalOpen: false,
     editingTask: null,
     defaultStatusForNew: "todo",
+
+    initializeFromStorage: () => {
+      if (typeof window !== "undefined") {
+        try {
+          const saved = localStorage.getItem(STORAGE_KEY);
+          if (saved) {
+            const parsed = JSON.parse(saved);
+            if (Array.isArray(parsed) && parsed.length > 0) {
+              set({ tasks: parsed });
+            }
+          }
+        } catch {}
+      }
+    },
 
     addTask: (input) => {
       const assigneeUser =

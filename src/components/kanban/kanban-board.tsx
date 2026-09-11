@@ -39,12 +39,20 @@ export function KanbanBoard() {
     assigneeFilter,
     moveTask,
     reorderTask,
+    initializeFromStorage,
   } = useTaskStore();
 
   const { canEdit } = useAuthStore();
   const { t } = useLanguage();
 
+  const [mounted, setMounted] = React.useState(false);
   const [activeTask, setActiveTask] = React.useState<Task | null>(null);
+
+  // Synchronize localStorage safely after initial mount to prevent SSR hydration mismatch
+  React.useEffect(() => {
+    initializeFromStorage();
+    setMounted(true);
+  }, [initializeFromStorage]);
 
   // Configure sensors for drag & drop with activation constraint (prevents click interception)
   const sensors = useSensors(
@@ -160,13 +168,40 @@ export function KanbanBoard() {
     }
   };
 
+  // Render static skeleton matching board layout during SSR to guarantee 100% clean hydration
+  if (!mounted) {
+    return (
+      <div className="space-y-6">
+        <KanbanToolbar />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3.5 items-start pb-6">
+          {COLUMNS.map((col) => (
+            <div
+              key={col.id}
+              className="flex flex-col rounded-xl border border-border/40 bg-card/30 p-3 min-h-[420px]"
+            >
+              <div className="flex items-center justify-between pb-3 mb-2 border-b border-border/30">
+                <div className="h-3.5 w-20 rounded bg-muted/60 animate-pulse" />
+                <div className="h-3.5 w-5 rounded bg-muted/40 animate-pulse" />
+              </div>
+              <div className="space-y-2.5 pt-1">
+                <div className="h-20 rounded-xl border border-border/30 bg-card/40 animate-pulse" />
+                <div className="h-24 rounded-xl border border-border/30 bg-card/40 animate-pulse" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       {/* Kanban Toolbar */}
       <KanbanToolbar />
 
-      {/* Drag & Drop Context */}
+      {/* Drag & Drop Context with deterministic ID */}
       <DndContext
+        id="nexus-pulse-kanban-dnd"
         sensors={sensors}
         collisionDetection={closestCorners}
         onDragStart={handleDragStart}

@@ -31,15 +31,20 @@ export function KanbanToolbar() {
 
   const { canEdit, user } = useAuthStore();
   const { t } = useLanguage();
+  const [mounted, setMounted] = React.useState(false);
 
-  const isEditable = canEdit();
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const isEditable = mounted ? canEdit() : true;
   const hasActiveFilters =
     searchQuery !== "" || priorityFilter !== "all" || assigneeFilter !== "all";
 
   return (
     <div className="space-y-3">
       {/* Read-only Alert Banner (if Viewer) */}
-      {!isEditable && (
+      {mounted && !isEditable && (
         <div className="flex items-center gap-2.5 px-3.5 py-2 rounded-xl border border-amber-500/30 bg-amber-500/10 text-amber-600 dark:text-amber-400 text-xs">
           <Lock className="h-3.5 w-3.5 shrink-0" />
           <span>{t.kanban.readOnlyBanner}</span>

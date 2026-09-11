@@ -17,6 +17,11 @@ export function Header() {
   const { setMobileSidebarOpen, setCommandPaletteOpen } = useUIStore();
   const { user } = useAuthStore();
   const { t } = useLanguage();
+  const [mounted, setMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Determine current route title for breadcrumbs
   const getBreadcrumbTitle = () => {
@@ -55,7 +60,7 @@ export function Header() {
 
       {/* Right side: Role badge + Command Palette trigger + Language + Theme */}
       <div className="flex items-center gap-2 sm:gap-2.5">
-        {user?.role === "viewer" && (
+        {mounted && user?.role === "viewer" && (
           <Badge
             variant="warning"
             className="hidden sm:inline-flex text-[10px] py-0 px-2 font-medium"

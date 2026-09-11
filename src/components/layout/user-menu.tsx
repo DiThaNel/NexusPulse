@@ -32,6 +32,12 @@ export function UserMenu({ isCollapsed = false }: UserMenuProps) {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  const [mounted, setMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const handleSwitch = (targetUser: User) => {
     switchProfile(targetUser.id);
     setIsOpen(false);
@@ -44,7 +50,8 @@ export function UserMenu({ isCollapsed = false }: UserMenuProps) {
     router.refresh();
   };
 
-  const currentUser = user || DEMO_USERS[0];
+  // Ensure deterministic SSR render matching initial server snapshot
+  const currentUser = (mounted ? user : DEMO_USERS[0]) || DEMO_USERS[0];
 
   const getRoleBadgeVariant = (role: string) => {
     switch (role) {
