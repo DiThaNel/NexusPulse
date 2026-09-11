@@ -8,6 +8,7 @@ import { DEMO_USERS, type TaskPriority } from "@/types";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
+  ChevronDown,
   Filter,
   Lock,
   Plus,
@@ -63,7 +64,7 @@ export function KanbanToolbar() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder={t.kanban.toolbar.searchPlaceholder}
-              className="w-full h-8 pl-8 pr-7 rounded-lg border border-border/50 bg-card/40 text-xs text-foreground placeholder:text-muted-foreground outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all"
+              className="w-full h-8 pl-8 pr-7 rounded-lg border border-border/60 bg-background text-xs text-foreground placeholder:text-muted-foreground outline-none focus:ring-1 focus:ring-primary/50 transition-all"
             />
             {searchQuery && (
               <button
@@ -76,33 +77,51 @@ export function KanbanToolbar() {
           </div>
 
           {/* Priority Select */}
-          <select
-            value={priorityFilter}
-            onChange={(e) =>
-              setPriorityFilter(e.target.value as TaskPriority | "all")
-            }
-            className="h-8 px-2.5 rounded-lg border border-border/50 bg-card/40 text-xs text-muted-foreground hover:text-foreground outline-none cursor-pointer"
-          >
-            <option value="all">{t.kanban.toolbar.allPriorities}</option>
-            <option value="urgent">{t.kanban.priorities.urgent}</option>
-            <option value="high">{t.kanban.priorities.high}</option>
-            <option value="medium">{t.kanban.priorities.medium}</option>
-            <option value="low">{t.kanban.priorities.low}</option>
-          </select>
+          <div className="relative">
+            <select
+              value={priorityFilter}
+              onChange={(e) =>
+                setPriorityFilter(e.target.value as TaskPriority | "all")
+              }
+              className="h-8 pl-3 pr-8 rounded-lg border border-border/60 bg-background hover:bg-muted/40 text-xs text-foreground appearance-none outline-none focus:ring-1 focus:ring-primary/50 cursor-pointer transition-colors"
+            >
+              <option value="all" className="bg-popover text-popover-foreground">
+                {t.kanban.toolbar.allPriorities}
+              </option>
+              <option value="urgent" className="bg-popover text-popover-foreground">
+                {t.kanban.priorities.urgent}
+              </option>
+              <option value="high" className="bg-popover text-popover-foreground">
+                {t.kanban.priorities.high}
+              </option>
+              <option value="medium" className="bg-popover text-popover-foreground">
+                {t.kanban.priorities.medium}
+              </option>
+              <option value="low" className="bg-popover text-popover-foreground">
+                {t.kanban.priorities.low}
+              </option>
+            </select>
+            <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 h-3 w-3 text-muted-foreground pointer-events-none opacity-60" />
+          </div>
 
           {/* Assignee Select */}
-          <select
-            value={assigneeFilter}
-            onChange={(e) => setAssigneeFilter(e.target.value)}
-            className="h-8 px-2.5 rounded-lg border border-border/50 bg-card/40 text-xs text-muted-foreground hover:text-foreground outline-none cursor-pointer"
-          >
-            <option value="all">{t.kanban.toolbar.allAssignees}</option>
-            {DEMO_USERS.map((u) => (
-              <option key={u.id} value={u.id}>
-                {u.name}
+          <div className="relative">
+            <select
+              value={assigneeFilter}
+              onChange={(e) => setAssigneeFilter(e.target.value)}
+              className="h-8 pl-3 pr-8 rounded-lg border border-border/60 bg-background hover:bg-muted/40 text-xs text-foreground appearance-none outline-none focus:ring-1 focus:ring-primary/50 cursor-pointer transition-colors"
+            >
+              <option value="all" className="bg-popover text-popover-foreground">
+                {t.kanban.toolbar.allAssignees}
               </option>
-            ))}
-          </select>
+              {DEMO_USERS.map((u) => (
+                <option key={u.id} value={u.id} className="bg-popover text-popover-foreground">
+                  {u.name}
+                </option>
+              ))}
+            </select>
+            <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 h-3 w-3 text-muted-foreground pointer-events-none opacity-60" />
+          </div>
 
           {/* Clear Filters Button */}
           {hasActiveFilters && (
