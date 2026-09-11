@@ -1,36 +1,95 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# NexusPulse — Operations & Workflow Intelligence SaaS ⚡
 
-## Getting Started
+> **A state-of-the-art B2B SaaS platform for real-time workflow orchestration, Kanban project management, and automated operations telemetry.**
 
-First, run the development server:
+Built from the ground up with strict enterprise-grade standards, modern front-end architecture, accessible design tokens, and next-generation React paradigms.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+---
+
+## 🚀 Key Technologies & Stack
+
+* **Core Framework:** [Next.js 15+](https://nextjs.org/) (App Router, Server Components, Streaming SSR)
+* **Language:** [TypeScript 5](https://www.typescriptlang.org/) (Strict Mode, 100% type-safe, zero `any`)
+* **Styling & System Design:** [Tailwind CSS v4](https://tailwindcss.com/) + [Radix UI Primitives](https://www.radix-ui.com/) + HSL Design Tokens
+* **Theming:** [next-themes](https://github.com/pacocoursey/next-themes) with zero-flash SSR Dark & Light mode
+* **Icons:** [Lucide React](https://lucide.dev/)
+* **Component Architecture:** Atomic design primitives (`Button`, `Card`, `Badge`) powered by `class-variance-authority` (CVA) and `clsx` / `tailwind-merge`
+
+---
+
+## 🏛️ Project Architecture
+
+```
+nexus-pulse/
+├── src/
+│   ├── app/                      # Next.js App Router (pages, layouts, globals.css)
+│   │   ├── (auth)/               # Auth route group
+│   │   ├── (dashboard)/          # SaaS application views
+│   │   ├── globals.css           # Design tokens (HSL, Dark/Light modes)
+│   │   ├── layout.tsx            # Root layout with ThemeProvider
+│   │   └── page.tsx              # Telemetry & Foundation showcase
+│   ├── components/
+│   │   ├── ui/                   # Reusable atomic design system components (CVA)
+│   │   │   ├── button.tsx
+│   │   │   ├── badge.tsx
+│   │   │   └── card.tsx
+│   │   ├── layout/               # App layout, Sidebar, Header, Command Palette
+│   │   ├── icons.tsx             # Brand and custom SVG icons
+│   │   ├── theme-provider.tsx    # next-themes client wrapper
+│   │   └── theme-toggle.tsx      # Smooth theme toggle button
+│   ├── config/                   # Site configuration, navigation and constants
+│   │   └── site.ts
+│   ├── lib/                      # Core utility functions (cn helper)
+│   │   └── utils.ts
+│   ├── types/                    # Enterprise TypeScript interfaces & domain models
+│   │   └── index.ts
+│   ├── hooks/                    # Custom React hooks
+│   └── stores/                   # Zustand client stores
+├── public/                       # Static assets
+├── tsconfig.json                 # Strict TypeScript configuration
+└── package.json
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 📦 Getting Started
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Prerequisites
+* Node.js 18.17+ or 20+ (tested on Node v24)
+* npm, pnpm, or yarn
 
-## Learn More
+### Installation
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+# Clone repository
+git clone https://github.com/DiThaNel/NexusPulse.git
+cd NexusPulse
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# Install dependencies
+npm install
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+# Start development server
+npm run dev
+```
 
-## Deploy on Vercel
+Visit [http://localhost:3000](http://localhost:3000) in your browser.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🗺️ Engineering Roadmap
+
+- [x] **Paso 1:** Foundation, strict TypeScript, Tailwind v4 design tokens, ThemeProvider, atomic components, Git setup.
+- [ ] **Paso 2:** SaaS Layout, Collapsible Sidebar, Breadcrumbs, and Command Palette (`Cmd + K`).
+- [ ] **Paso 3:** Interactive Kanban Board with `@dnd-kit` and Zustand client state.
+- [ ] **Paso 4:** Server State & Optimistic UI with TanStack Query.
+- [ ] **Paso 5:** Real-time Analytics, Telemetry charts & AI Copilot.
+- [ ] **Paso 6:** End-to-end testing with Vitest & Playwright.
+
+---
+
+## 👨‍💻 Author
+
+**Gabriel Gonçalves**  
+*Computer Engineer & Front-End Developer*  
+* [GitHub Profile](https://github.com/DiThaNel)
+* [LinkedIn](https://linkedin.com)
