@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Command } from "cmdk";
 import { useTheme } from "@/components/theme-provider";
 import { useUIStore } from "@/stores/ui-store";
+import { useTaskStore } from "@/stores/task-store";
 import { useLanguage } from "@/components/language-provider";
 import {
   ArrowRight,
@@ -19,6 +20,7 @@ import {
 export function CommandPalette() {
   const router = useRouter();
   const { isCommandPaletteOpen, setCommandPaletteOpen } = useUIStore();
+  const { openCreateModal } = useTaskStore();
   const { theme, setTheme, resolvedTheme } = useTheme();
   const { t, locale, toggleLocale } = useLanguage();
 
@@ -143,7 +145,11 @@ export function CommandPalette() {
               className="text-[11px] font-medium text-muted-foreground px-2 py-1.5 mt-2 uppercase tracking-wider border-t border-border/40"
             >
               <Command.Item
-                onSelect={() => navigateTo("/board")}
+                onSelect={() => {
+                  setCommandPaletteOpen(false);
+                  openCreateModal("todo");
+                  router.push("/board");
+                }}
                 className="flex items-center gap-2.5 px-2.5 py-2 rounded-lg cursor-pointer text-sm text-foreground hover:bg-muted/60 data-[selected=true]:bg-muted/70 transition-colors"
               >
                 <Plus className="h-4 w-4 text-muted-foreground" />
