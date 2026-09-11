@@ -37,10 +37,11 @@ export function UserMenu({ isCollapsed = false }: UserMenuProps) {
     setIsOpen(false);
   };
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await logout();
     setIsOpen(false);
     router.push("/login");
+    router.refresh();
   };
 
   const currentUser = user || DEMO_USERS[0];
