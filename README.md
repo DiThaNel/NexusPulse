@@ -1,4 +1,4 @@
-# NexusPulse — Operations & Workflow Intelligence SaaS ⚡
+# NexusPulse — Operations & Workflow Intelligence SaaS
 
 > **A state-of-the-art B2B SaaS platform for real-time workflow orchestration, Kanban project management, and automated operations telemetry.**
 
@@ -6,7 +6,7 @@ Built from the ground up with strict enterprise-grade standards, modern front-en
 
 ---
 
-## 🚀 Key Technologies & Stack
+## Key Technologies & Stack
 
 * **Core Framework:** [Next.js 15+](https://nextjs.org/) (App Router, Server Components, Streaming SSR)
 * **Language:** [TypeScript 5](https://www.typescriptlang.org/) (Strict Mode, 100% type-safe, zero `any`)
@@ -17,7 +17,7 @@ Built from the ground up with strict enterprise-grade standards, modern front-en
 
 ---
 
-## 🏛️ Project Architecture
+## Project Architecture
 
 ```
 nexus-pulse/
@@ -52,7 +52,7 @@ nexus-pulse/
 
 ---
 
-## 📦 Getting Started
+## Getting Started
 
 ### Prerequisites
 * Node.js 18.17+ or 20+ (tested on Node v24)
@@ -76,7 +76,7 @@ Visit [http://localhost:3000](http://localhost:3000) in your browser.
 
 ---
 
-## 🗺️ Engineering Roadmap
+## Engineering Roadmap
 
 - [x] **Paso 1:** Foundation, strict TypeScript, Tailwind v4 design tokens, ThemeProvider, atomic components, Git setup.
 - [ ] **Paso 2:** SaaS Layout, Collapsible Sidebar, Breadcrumbs, and Command Palette (`Cmd + K`).
@@ -86,10 +86,3 @@ Visit [http://localhost:3000](http://localhost:3000) in your browser.
 - [ ] **Paso 6:** End-to-end testing with Vitest & Playwright.
 
 ---
-
-## 👨‍💻 Author
-
-**Gabriel Gonçalves**  
-*Computer Engineer & Front-End Developer*  
-* [GitHub Profile](https://github.com/DiThaNel)
-* [LinkedIn](https://linkedin.com)
