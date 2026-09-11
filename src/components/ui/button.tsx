@@ -20,8 +20,10 @@ const buttonVariants = cva(
           "bg-destructive text-destructive-foreground hover:opacity-90 shadow-sm",
         link:
           "text-primary underline-offset-4 hover:underline p-0 h-auto",
-        glow:
-          "bg-primary text-primary-foreground shadow-[0_0_20px_rgba(79,70,229,0.35)] hover:shadow-[0_0_25px_rgba(79,70,229,0.5)] hover:opacity-95",
+        subtle:
+          "bg-muted/70 text-foreground hover:bg-muted border border-border/50",
+        inverted:
+          "bg-foreground text-background hover:bg-foreground/90 font-medium shadow-sm",
       },
       size: {
         default: "h-10 px-4 py-2",
