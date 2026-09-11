@@ -4,15 +4,18 @@ import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useUIStore } from "@/stores/ui-store";
+import { useAuthStore } from "@/stores/auth-store";
 import { useLanguage } from "@/components/language-provider";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { LanguageToggle } from "@/components/language-toggle";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { ChevronRight, Menu, Search } from "lucide-react";
 
 export function Header() {
   const pathname = usePathname();
   const { setMobileSidebarOpen, setCommandPaletteOpen } = useUIStore();
+  const { user } = useAuthStore();
   const { t } = useLanguage();
 
   // Determine current route title for breadcrumbs
@@ -50,8 +53,17 @@ export function Header() {
         </nav>
       </div>
 
-      {/* Right side: Command Palette search trigger + Language + Theme */}
+      {/* Right side: Role badge + Command Palette trigger + Language + Theme */}
       <div className="flex items-center gap-2 sm:gap-2.5">
+        {user?.role === "viewer" && (
+          <Badge
+            variant="warning"
+            className="hidden sm:inline-flex text-[10px] py-0 px-2 font-medium"
+          >
+            {t.shell.auth.readOnlyNotice}
+          </Badge>
+        )}
+
         {/* Command Palette Trigger */}
         <Button
           variant="outline"

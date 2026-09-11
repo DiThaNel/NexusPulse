@@ -2,13 +2,44 @@ export type TaskStatus = "backlog" | "todo" | "in_progress" | "in_review" | "don
 
 export type TaskPriority = "low" | "medium" | "high" | "urgent";
 
+export type UserRole = "admin" | "engineer" | "product_manager" | "viewer";
+
 export interface User {
   id: string;
   name: string;
   email: string;
+  initials: string;
+  title: string;
+  role: UserRole;
   avatarUrl?: string;
-  role: "admin" | "engineer" | "product_manager" | "viewer";
 }
+
+export const DEMO_USERS: User[] = [
+  {
+    id: "user-1",
+    name: "Gabriel Gonçalves",
+    email: "gabriel@nexus-pulse.dev",
+    initials: "GG",
+    title: "Tech Lead & Architect",
+    role: "admin",
+  },
+  {
+    id: "user-2",
+    name: "Elena Rostova",
+    email: "elena@nexus-pulse.dev",
+    initials: "ER",
+    title: "Product Manager",
+    role: "product_manager",
+  },
+  {
+    id: "user-3",
+    name: "Lucas Silva",
+    email: "lucas@nexus-pulse.dev",
+    initials: "LS",
+    title: "Guest Viewer",
+    role: "viewer",
+  },
+];
 
 export interface Task {
   id: string;

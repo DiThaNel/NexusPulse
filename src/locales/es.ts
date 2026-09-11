@@ -45,6 +45,28 @@ export const es = {
       role: "Front-End Engineer",
       status: "En línea",
     },
+    auth: {
+      activeProfile: "Perfil Activo",
+      switchProfile: "Cambiar Perfil (Demo)",
+      logout: "Cerrar Sesión",
+      login: "Iniciar Sesión",
+      roles: {
+        admin: "Tech Lead (Admin)",
+        product_manager: "Product Manager",
+        viewer: "Guest (Viewer)",
+      },
+      readOnlyNotice: "Modo Solo Lectura",
+    },
+  },
+  authPage: {
+    title: "Bienvenido a NexusPulse",
+    subtitle: "Ingresa tus credenciales o accede con 1 clic a cualquier perfil de prueba.",
+    emailLabel: "Correo corporativo",
+    passwordLabel: "Contraseña",
+    loginBtn: "Iniciar Sesión",
+    demoTitle: "Perfiles Demo con Roles (RBAC)",
+    demoSubtitle: "Haz clic para probar los diferentes niveles de permisos en la aplicación:",
+    backToApp: "Volver a la plataforma",
   },
   hero: {
     statusBadge: "Paso 1 Completado • Arquitectura Base",

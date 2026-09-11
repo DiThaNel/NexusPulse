@@ -1,11 +1,18 @@
 "use client";
 
-import * as React from "react";
+import { usePathname } from "next/navigation";
 import { Sidebar } from "@/components/layout/sidebar";
 import { Header } from "@/components/layout/header";
 import { CommandPalette } from "@/components/layout/command-palette";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
+
+  // If on login route, render children standalone without shell
+  if (pathname === "/login") {
+    return <div className="min-h-screen bg-background text-foreground">{children}</div>;
+  }
+
   return (
     <div className="flex min-h-screen bg-background text-foreground antialiased selection:bg-primary/20 selection:text-primary">
       {/* Sidebar */}

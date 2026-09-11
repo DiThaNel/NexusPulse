@@ -17,6 +17,7 @@ import {
   X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { UserMenu } from "@/components/layout/user-menu";
 import { cn } from "@/lib/utils";
 
 export function Sidebar() {
@@ -134,29 +135,8 @@ export function Sidebar() {
 
       {/* Bottom User Pill & Collapse Button */}
       <div className="space-y-2 border-t border-border/50 pt-3">
-        {/* User profile */}
-        <div
-          className={cn(
-            "flex items-center gap-2.5 px-2 py-1.5 rounded-lg bg-muted/30 border border-border/40",
-            isSidebarCollapsed ? "justify-center" : "justify-between"
-          )}
-        >
-          <div className="flex items-center gap-2.5 overflow-hidden">
-            <div className="h-7 w-7 rounded-full bg-primary/20 text-primary flex items-center justify-center text-xs font-semibold shrink-0">
-              GG
-            </div>
-            {!isSidebarCollapsed && (
-              <div className="flex flex-col overflow-hidden">
-                <span className="text-xs font-medium text-foreground truncate">
-                  {t.shell.user.name}
-                </span>
-                <span className="text-[10px] text-muted-foreground truncate">
-                  {t.shell.user.role}
-                </span>
-              </div>
-            )}
-          </div>
-        </div>
+        {/* User profile with interactive popover */}
+        <UserMenu isCollapsed={isSidebarCollapsed} />
 
         {/* Desktop Collapse Toggle */}
         <Button

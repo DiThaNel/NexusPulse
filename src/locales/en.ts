@@ -47,6 +47,28 @@ export const en: typeof es = {
       role: "Front-End Engineer",
       status: "Online",
     },
+    auth: {
+      activeProfile: "Active Profile",
+      switchProfile: "Switch Profile (Demo)",
+      logout: "Sign Out",
+      login: "Sign In",
+      roles: {
+        admin: "Tech Lead (Admin)",
+        product_manager: "Product Manager",
+        viewer: "Guest (Viewer)",
+      },
+      readOnlyNotice: "Read Only Mode",
+    },
+  },
+  authPage: {
+    title: "Welcome to NexusPulse",
+    subtitle: "Sign in with your credentials or access instantly with 1-click demo personas.",
+    emailLabel: "Corporate email",
+    passwordLabel: "Password",
+    loginBtn: "Sign In",
+    demoTitle: "Demo Roles (RBAC Access)",
+    demoSubtitle: "Click below to test role-based permissions in the application:",
+    backToApp: "Return to platform",
   },
   hero: {
     statusBadge: "Step 1 Completed • Foundation Architecture",
