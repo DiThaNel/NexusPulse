@@ -83,12 +83,22 @@ Visit [http://localhost:3000](http://localhost:3000) in your browser.
 
 ---
 
+## Documentation & Engineering Log
+
+Detailed technical documentation, architectural decisions, and verification records for each phase are maintained in:
+👉 [**docs/WALKTHROUGH.md**](./docs/WALKTHROUGH.md)
+
+---
+
 ## Engineering Roadmap
 
-- [x] **Paso 1:** Foundation, strict TypeScript, Tailwind v4 design tokens, ThemeProvider, bilingual i18n (ES/EN), atomic components, Git setup.
-- [ ] **Paso 2:** SaaS Layout, Collapsible Sidebar, Breadcrumbs, and Command Palette (`Cmd + K`).
-- [ ] **Paso 3:** Interactive Kanban Board with `@dnd-kit` and Zustand client state.
-- [ ] **Paso 4:** Server State & Optimistic UI with TanStack Query.
-- [ ] **Paso 5:** Real-time Analytics, Telemetry charts & AI Copilot.
-- [ ] **Paso 6:** Testing automatizado con Jest / React Testing Library & Vitest.
+- [x] **Fase 1:** Foundation, strict TypeScript, Tailwind v4 design tokens, ThemeProvider, bilingual i18n (ES/EN), atomic components.
+- [x] **Fase 2:** SaaS Application Shell, Collapsible Sidebar, Breadcrumbs, Command Palette (`⌘K`), and Multi-User RBAC.
+- [x] **Fase 3:** Interactive Kanban Board (`@dnd-kit`), Zustand CRUD state, and Zod runtime schema validation.
+- [x] **Capa de Seguridad:** Next.js Edge Middleware route protection, secure `HttpOnly` session cookies, and HTTP security headers (CSP, HSTS, X-Frame-Options: DENY).
+- [ ] **Fase 4:** Server State & Optimistic UI with TanStack Query.
+- [ ] **Fase 5:** Real-time Operational Telemetry & Analytics Dashboard.
+- [ ] **Fase 6:** Automated Testing Suite with Jest / React Testing Library & Vitest.
+- [ ] **Fase 7:** Final Production Build & Remote Push to GitHub.
+
 
