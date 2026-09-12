@@ -203,8 +203,8 @@ Separar de forma limpia el estado del servidor (*Server State*) del estado de la
 * [x] **Módulo de Seguridad: Edge Middleware, Cookies HttpOnly y Security Headers** *(Completado)*
 * [x] **Fase 4: Gestión de Estado Asíncrono & Optimistic UI (TanStack Query v5 & Animaciones de Modales)** *(Completado)*
 * [ ] **Fase 5: Motor de Workflows & Automatizaciones Operativas (Pipelines, Triggers de Eventos y Ejecución en Tiempo Real)**
-* [ ] **Fase 6: Versión Mobile App mediante Vía Híbrida / Empaquetado Nativo: Capacitor (Ionic)** *(Sincronización multiplataforma, feedback háptico en drag-and-drop, notificaciones push nativas y empaquetado para iOS/Android)*
-* [ ] **Fase 7: Métricas Operativas & Telemetría en Tiempo Real (Analytics Dashboard)**
-* [ ] **Fase 8: Suite de Testing Automatizado con Jest / React Testing Library & Vitest**
-* [ ] **Fase 9: Auditoría Final de Rendimiento, Optimización de Producción y Push Remoto a GitHub**
+* [ ] **Fase 6: Métricas Operativas & Telemetría en Tiempo Real (Analytics Dashboard)**
+* [ ] **Fase 7: Suite de Testing Automatizado con Jest / React Testing Library & Vitest**
+* [ ] **Fase 8: Auditoría Final de Rendimiento, Optimización de Producción y Push Remoto a GitHub**
+* [ ] **Fase 9 (Hito Final): Versión Mobile App mediante Vía Híbrida / Empaquetado Nativo: Capacitor (Ionic)** *(Sincronización multiplataforma, feedback háptico en drag-and-drop, notificaciones push nativas y empaquetado para iOS/Android)*
 
