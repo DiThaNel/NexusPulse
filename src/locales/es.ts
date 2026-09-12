@@ -91,6 +91,11 @@ export const es = {
       newTask: "Nueva Tarea",
       clearFilters: "Limpiar filtros",
       tasksCount: "tareas",
+      optimisticBadge: "TanStack Query • Optimistic UI",
+      syncStatus: "Sincronizado",
+      syncingStatus: "Sincronizando...",
+      simulateNetworkError: "Simular Error de Red",
+      simulateErrorActive: "Fallo Simulado (Rollback)",
     },
     card: {
       estimate: "hrs",

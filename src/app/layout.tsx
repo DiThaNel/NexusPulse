@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { LanguageProvider } from "@/components/language-provider";
+import { QueryProvider } from "@/components/query-provider";
 import { AppShell } from "@/components/layout/app-shell";
 import { siteConfig } from "@/config/site";
 
@@ -55,7 +56,9 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <LanguageProvider>
-            <AppShell>{children}</AppShell>
+            <QueryProvider>
+              <AppShell>{children}</AppShell>
+            </QueryProvider>
           </LanguageProvider>
         </ThemeProvider>
       </body>

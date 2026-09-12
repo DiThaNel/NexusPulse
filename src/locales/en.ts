@@ -93,6 +93,11 @@ export const en: typeof es = {
       newTask: "New Task",
       clearFilters: "Clear filters",
       tasksCount: "tasks",
+      optimisticBadge: "TanStack Query • Optimistic UI",
+      syncStatus: "Synced",
+      syncingStatus: "Syncing...",
+      simulateNetworkError: "Simulate Network Error",
+      simulateErrorActive: "Simulated Error (Rollback)",
     },
     card: {
       estimate: "hrs",

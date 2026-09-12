@@ -7,6 +7,9 @@ import { useLanguage } from "@/components/language-provider";
 import { DEMO_USERS, type TaskPriority } from "@/types";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { useIsFetching } from "@tanstack/react-query";
+import { useNotificationStore } from "@/stores/notification-store";
+import { TASKS_QUERY_KEY } from "@/hooks/use-tasks-query";
 import {
   ChevronDown,
   Filter,
@@ -16,6 +19,7 @@ import {
   Search,
   SlidersHorizontal,
   X,
+  Zap,
 } from "lucide-react";
 
 export function KanbanToolbar() {
@@ -33,6 +37,9 @@ export function KanbanToolbar() {
   const { canEdit, user } = useAuthStore();
   const { t } = useLanguage();
   const [mounted, setMounted] = React.useState(false);
+
+  const isFetching = useIsFetching({ queryKey: TASKS_QUERY_KEY }) > 0;
+  const { simulateError, toggleSimulateError } = useNotificationStore();
 
   React.useEffect(() => {
     setMounted(true);
@@ -57,7 +64,7 @@ export function KanbanToolbar() {
         {/* Left Side: Search + Filter Selects */}
         <div className="flex flex-1 flex-wrap items-center gap-2">
           {/* Search Input */}
-          <div className="relative flex-1 min-w-[200px] max-w-sm">
+          <div className="relative flex-1 min-w-[180px] max-w-sm">
             <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
             <input
               type="text"
@@ -137,8 +144,42 @@ export function KanbanToolbar() {
           )}
         </div>
 
-        {/* Right Side: New Task Button */}
+        {/* Right Side: Network Status + Simulate Error Toggle + New Task */}
         <div className="flex items-center gap-2">
+          {/* Live Sync Status Pill */}
+          <div className="hidden lg:flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-border/40 bg-card/30 text-[11px] text-muted-foreground">
+            <span
+              className={`h-1.5 w-1.5 rounded-full ${
+                isFetching ? "bg-amber-500 animate-pulse" : "bg-emerald-500"
+              }`}
+            />
+            <span>{isFetching ? t.kanban.toolbar.syncingStatus : t.kanban.toolbar.syncStatus}</span>
+          </div>
+
+          {/* Simulate Network Error Button (Rollback Showcase) */}
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={toggleSimulateError}
+            className={`h-8 gap-1.5 text-xs transition-all ${
+              simulateError
+                ? "border-amber-500/50 bg-amber-500/10 text-amber-600 dark:text-amber-400 hover:bg-amber-500/20 font-medium"
+                : "border-border/60 text-muted-foreground hover:text-foreground hover:bg-muted/40"
+            }`}
+            title="Simula un fallo en el servidor al mover tarjetas para observar el Rollback Optimista"
+          >
+            <Zap className={`h-3 w-3 ${simulateError ? "text-amber-500 fill-amber-500" : ""}`} />
+            <span className="hidden sm:inline">
+              {simulateError
+                ? t.kanban.toolbar.simulateErrorActive
+                : t.kanban.toolbar.simulateNetworkError}
+            </span>
+            <span className="sm:hidden">
+              {simulateError ? "Error ON" : "Simular"}
+            </span>
+          </Button>
+
+          {/* New Task Button */}
           <Button
             variant="inverted"
             size="sm"

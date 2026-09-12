@@ -18,6 +18,7 @@ import { type Task, type TaskStatus } from "@/types";
 import { useTaskStore } from "@/stores/task-store";
 import { useAuthStore } from "@/stores/auth-store";
 import { useLanguage } from "@/components/language-provider";
+import { useTasksQuery, useMoveTaskMutation } from "@/hooks/use-tasks-query";
 import { KanbanColumn } from "@/components/kanban/kanban-column";
 import { KanbanCard } from "@/components/kanban/kanban-card";
 import { KanbanToolbar } from "@/components/kanban/kanban-toolbar";
@@ -32,27 +33,30 @@ const COLUMNS: { id: TaskStatus; titleKey: "backlog" | "todo" | "in_progress" | 
 ];
 
 export function KanbanBoard() {
-  const {
-    tasks,
-    searchQuery,
-    priorityFilter,
-    assigneeFilter,
-    moveTask,
-    reorderTask,
-    initializeFromStorage,
-  } = useTaskStore();
-
+  const { searchQuery, priorityFilter, assigneeFilter } = useTaskStore();
   const { canEdit } = useAuthStore();
   const { t } = useLanguage();
 
   const [mounted, setMounted] = React.useState(false);
   const [activeTask, setActiveTask] = React.useState<Task | null>(null);
 
-  // Synchronize localStorage safely after initial mount to prevent SSR hydration mismatch
+  // Filters for TanStack Query
+  const filterArgs = React.useMemo(
+    () => ({
+      search: searchQuery,
+      priority: priorityFilter,
+      assignee: assigneeFilter,
+    }),
+    [searchQuery, priorityFilter, assigneeFilter]
+  );
+
+  // TanStack Query: Server state + Optimistic cache
+  const { data: tasks = [] } = useTasksQuery(filterArgs);
+  const { mutate: moveTaskOptimistic } = useMoveTaskMutation(filterArgs);
+
   React.useEffect(() => {
-    initializeFromStorage();
     setMounted(true);
-  }, [initializeFromStorage]);
+  }, []);
 
   // Configure sensors for drag & drop with activation constraint (prevents click interception)
   const sensors = useSensors(
@@ -66,32 +70,6 @@ export function KanbanBoard() {
     })
   );
 
-  // Filter tasks based on search and selected filters
-  const filteredTasks = React.useMemo(() => {
-    return tasks.filter((task) => {
-      // Search query filter
-      if (searchQuery.trim() !== "") {
-        const query = searchQuery.toLowerCase();
-        const matchesTitle = task.title.toLowerCase().includes(query);
-        const matchesDesc = task.description?.toLowerCase().includes(query);
-        const matchesTags = task.tags?.some((tag) => tag.toLowerCase().includes(query));
-        if (!matchesTitle && !matchesDesc && !matchesTags) return false;
-      }
-
-      // Priority filter
-      if (priorityFilter !== "all" && task.priority !== priorityFilter) {
-        return false;
-      }
-
-      // Assignee filter
-      if (assigneeFilter !== "all" && task.assignee?.id !== assigneeFilter) {
-        return false;
-      }
-
-      return true;
-    });
-  }, [tasks, searchQuery, priorityFilter, assigneeFilter]);
-
   // Group tasks by column status
   const tasksByColumn = React.useMemo(() => {
     const acc: Record<TaskStatus, Task[]> = {
@@ -102,7 +80,7 @@ export function KanbanBoard() {
       done: [],
     };
 
-    filteredTasks.forEach((task) => {
+    tasks.forEach((task) => {
       if (acc[task.status]) {
         acc[task.status].push(task);
       } else {
@@ -111,7 +89,7 @@ export function KanbanBoard() {
     });
 
     return acc;
-  }, [filteredTasks]);
+  }, [tasks]);
 
   const isEditable = canEdit();
 
@@ -141,7 +119,7 @@ export function KanbanBoard() {
     if (isOverColumn) {
       const newStatus = overId as TaskStatus;
       if (activeTaskItem.status !== newStatus) {
-        moveTask(activeId, newStatus);
+        moveTaskOptimistic({ taskId: activeId, newStatus });
       }
       return;
     }
@@ -149,7 +127,7 @@ export function KanbanBoard() {
     // Dragging over another task
     const overTaskItem = tasks.find((t) => t.id === overId);
     if (overTaskItem && activeTaskItem.status !== overTaskItem.status) {
-      moveTask(activeId, overTaskItem.status);
+      moveTaskOptimistic({ taskId: activeId, newStatus: overTaskItem.status });
     }
   };
 
@@ -163,8 +141,17 @@ export function KanbanBoard() {
     const activeId = String(active.id);
     const overId = String(over.id);
 
+    // If dropped on another task in the same or different column
     if (activeId !== overId) {
-      reorderTask(activeId, overId);
+      const overTaskItem = tasks.find((t) => t.id === overId);
+      if (overTaskItem) {
+        const overIndex = tasks.findIndex((t) => t.id === overId);
+        moveTaskOptimistic({
+          taskId: activeId,
+          newStatus: overTaskItem.status,
+          targetIndex: overIndex,
+        });
+      }
     }
   };
 
@@ -196,7 +183,7 @@ export function KanbanBoard() {
 
   return (
     <div className="space-y-6">
-      {/* Kanban Toolbar */}
+      {/* Kanban Toolbar with Real-Time Sync & Error Simulation */}
       <KanbanToolbar />
 
       {/* Drag & Drop Context with deterministic ID */}

@@ -5,6 +5,8 @@ import { useTaskStore } from "@/stores/task-store";
 import { useLanguage } from "@/components/language-provider";
 import { taskSchema, type TaskInput } from "@/lib/validations/task";
 import { DEMO_USERS, type TaskPriority, type TaskStatus } from "@/types";
+import { useCreateTaskMutation, TASKS_QUERY_KEY } from "@/hooks/use-tasks-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { X, AlertCircle } from "lucide-react";
 
@@ -14,10 +16,11 @@ export function TaskModal() {
     editingTask,
     defaultStatusForNew,
     closeTaskModal,
-    addTask,
     updateTask,
   } = useTaskStore();
 
+  const queryClient = useQueryClient();
+  const { mutate: createTaskOptimistic } = useCreateTaskMutation();
   const { t } = useLanguage();
 
   const [title, setTitle] = React.useState("");
@@ -93,8 +96,15 @@ export function TaskModal() {
 
     if (editingTask) {
       updateTask(editingTask.id, result.data);
+      fetch(`/api/tasks/${editingTask.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(result.data),
+      }).then(() => {
+        queryClient.invalidateQueries({ queryKey: TASKS_QUERY_KEY });
+      });
     } else {
-      addTask(result.data);
+      createTaskOptimistic(result.data);
     }
 
     closeTaskModal();

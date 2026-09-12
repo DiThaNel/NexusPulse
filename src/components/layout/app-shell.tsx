@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import { Sidebar } from "@/components/layout/sidebar";
 import { Header } from "@/components/layout/header";
 import { CommandPalette } from "@/components/layout/command-palette";
+import { OptimisticToastContainer } from "@/components/ui/optimistic-toast";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -28,6 +29,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
       {/* Global Command Palette */}
       <CommandPalette />
+
+      {/* Optimistic UI Feedback Toasts */}
+      <OptimisticToastContainer />
     </div>
   );
 }

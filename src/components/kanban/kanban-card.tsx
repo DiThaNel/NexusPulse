@@ -7,6 +7,7 @@ import { type Task, type TaskPriority } from "@/types";
 import { useAuthStore } from "@/stores/auth-store";
 import { useTaskStore } from "@/stores/task-store";
 import { useLanguage } from "@/components/language-provider";
+import { useDeleteTaskMutation } from "@/hooks/use-tasks-query";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Clock, GripVertical, Lock, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
@@ -18,9 +19,10 @@ interface KanbanCardProps {
 }
 
 export function KanbanCard({ task, isOverlay = false }: KanbanCardProps) {
+  const { openEditModal } = useTaskStore();
   const { canEdit } = useAuthStore();
-  const { deleteTask, openEditModal } = useTaskStore();
   const { t } = useLanguage();
+  const { mutate: deleteTaskOptimistic } = useDeleteTaskMutation();
   const [showActions, setShowActions] = React.useState(false);
 
   const isEditable = canEdit();
@@ -178,7 +180,7 @@ export function KanbanCard({ task, isOverlay = false }: KanbanCardProps) {
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  deleteTask(task.id);
+                  deleteTaskOptimistic(task.id);
                 }}
                 className="h-5 w-5 rounded flex items-center justify-center text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
                 title={t.kanban.card.deleteTask}
