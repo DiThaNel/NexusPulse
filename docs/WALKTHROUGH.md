@@ -6,12 +6,40 @@ Este documento es el registro técnico oficial de **NexusPulse**. Aquí se docum
 
 ## 📑 Tabla de Contenidos
 
-1. [Fase 1: Fundaciones, Design System & Soporte Bilingüe](#fase-1-fundaciones-design-system--soporte-bilingüe)
-2. [Fase 2: SaaS Application Shell, Command Palette & RBAC](#fase-2-saas-application-shell-command-palette--rbac)
-3. [Fase 3: Tablero Kanban Interactivo con Drag & Drop](#fase-3-tablero-kanban-interactivo-con-drag--drop)
-4. [Capa de Seguridad: Edge Middleware, Cookies HttpOnly & Cabeceras HTTP](#capa-de-seguridad-edge-middleware-cookies-httponly--cabeceras-http)
-5. [Resiliencia Técnica: Resolución Definitiva de Hidratación SSR/CSR](#resiliencia-técnica-resolución-definitiva-de-hidratación-ssrcsr)
-6. [Hoja de Ruta para Próximas Fases](#hoja-de-ruta-para-próximas-fases)
+1. [🛠️ Stack Tecnológico y Herramientas: Catálogo Detallado y Propósito](#️-stack-tecnológico-y-herramientas-catálogo-detallado-y-propósito)
+2. [Fase 1: Fundaciones, Design System & Soporte Bilingüe](#fase-1-fundaciones-design-system--soporte-bilingüe)
+3. [Fase 2: SaaS Application Shell, Command Palette & RBAC](#fase-2-saas-application-shell-command-palette--rbac)
+4. [Fase 3: Tablero Kanban Interactivo con Drag & Drop](#fase-3-tablero-kanban-interactivo-con-drag--drop)
+5. [Capa de Seguridad: Edge Middleware, Cookies HttpOnly & Cabeceras HTTP](#capa-de-seguridad-edge-middleware-cookies-httponly--cabeceras-http)
+6. [Resiliencia Técnica: Resolución Definitiva de Hidratación SSR/CSR](#resiliencia-técnica-resolución-definitiva-de-hidratación-ssrcsr)
+7. [Fase 4: Gestión de Estado Asíncrono & Optimistic UI (TanStack Query v5)](#fase-4-gestión-de-estado-asíncrono--optimistic-ui-tanstack-query-v5)
+8. [Hoja de Ruta Actualizada para Próximas Fases](#hoja-de-ruta-actualizada-para-próximas-fases)
+
+---
+
+## 🛠️ Stack Tecnológico y Herramientas: Catálogo Detallado y Propósito
+
+A continuación se detalla cada una de las tecnologías, librerías y herramientas utilizadas en **NexusPulse**, explicando con precisión técnica cuál es su rol y por qué fue seleccionada para este producto:
+
+| Tecnología / Herramienta | Versión | Rol Específico y Propósito en el Proyecto |
+| :--- | :--- | :--- |
+| **Next.js (App Router & Turbopack)** | `16.3.4` | **Base Arquitectónica Full-Stack**: Proporciona Server-Side Rendering (SSR) de alto rendimiento, compilación instantánea con Turbopack, endpoints de API REST internos (`/api/tasks`, `/api/auth/*`) y Edge Middleware perimetral. |
+| **React** | `19.2.8` | **Motor de UI Reactivo**: Proporciona concurrencia nativa, soporte de Hooks modernos (`useTransition`, `useOptimistic`), propagación de `ref` sin necesidad de `forwardRef` y renderizado optimizado del árbol de componentes. |
+| **TypeScript (Strict Mode)** | `5.x` | **Seguridad Estática de Tipos**: Contratos de datos inmutables (`User`, `Task`, `Column`, `SessionCookiePayload`), inferencia automática de esquemas con `z.infer`, y erradicación total de tipos implícitos `any` en todo el repositorio. |
+| **Tailwind CSS v4 (`@tailwindcss/postcss`)** | `4.x` | **Motor de Estilos de Nueva Generación**: Arquitectura sin archivos JavaScript de configuración pesada (`@theme`). Tokens semánticos HSL (`background`, `foreground`, `border`, `card`, `primary`) con soporte para temas claro/oscuro en caliente y bordes ultra-tenues (`border-border/60`). |
+| **TanStack Query v5 (`@tanstack/react-query`)** | `5.102.8` | **Gestión de Estado de Servidor (*Server State*)**: Manejo de caché reactiva, revalidación en segundo plano (`staleTime: 60s`), mutaciones optimistas con **latencia percibida de 0ms** (`onMutate`), snapshots previos y **rollback automático** ante fallos de red o errores HTTP 500 (`onError`). |
+| **Zustand** | `5.0.15` | **Gestión de Estado de Cliente (*Client UI State*)**: Store en memoria ultraligero y desacoplado para controlar apertura de modales (`TaskModal`, `CommandPalette`), colapso del sidebar responsivo, filtros instantáneos por texto/prioridad/responsable y el conmutador de simulación de errores. |
+| **@dnd-kit (Core, Sortable, Utilities)** | `6.3.1` / `10.0.0` | **Motor Accesible de Drag & Drop**: Gestión de eventos táctiles y de puntero para el tablero Kanban. Detección precisa de colisiones (`closestCorners`), ordenamiento dinámico por columnas y previsualizaciones flotantes suaves con `DragOverlay`. |
+| **Zod** | `4.6.2` | **Validación y Sanitización en Runtime**: Validación estricta de esquemas tanto en formularios del cliente como en los endpoints del servidor (`src/lib/validations/task.ts`), impidiendo inyecciones de datos no válidos, caracteres prohibidos o payloads corruptos. |
+| **Framer Motion** | `13.2.0` | **Micro-Interacciones & Física Táctil**: Orquestación de animaciones elásticas (*spring physics*) en modales (`TaskModal`, `CommandPalette`, Drawer móvil) mediante `<AnimatePresence>` para eliminar desmontajes abruptos, y animación flotante de notificaciones toast (`popLayout`). |
+| **cmdk** | `1.1.1` | **Paleta de Comandos Accesible (`⌘K` / `Ctrl+K`)**: Interfaz de búsqueda global rápida por teclado para alternar temas, cambiar idioma, crear tareas y navegar instantáneamente entre vistas. |
+| **Lucide React** | `1.45.0` | **Iconografía Minimalista**: Set de iconos vectoriales SVG limpios de 1.5-2px optimizados para *tree-shaking*, aportando elegancia sin sobrecargar el peso del bundle. |
+| **Next-Themes & ThemeProvider React 19** | `0.4.6` | **Gestión de Modo Claro / Oscuro**: Control nativo de la clase `.dark` en el elemento raíz `<html>` sincronizado con `localStorage` y compatible al 100% con la arquitectura de hidratación de React 19 sin scripts inline vulnerables. |
+| **Bilingual i18n Engine (Propio)** | Nativo | **Internacionalización Bilingüe**: Contexto tipado sin dependencias externas pesadas con soporte completo para Español e Inglés, persistencia local y alternancia reactiva en tiempo real. |
+| **Edge Middleware & Security Headers** | Nativo Next.js | **Capa de Seguridad Perimetral**: Protección de rutas privadas (`/board`, `/workflows`, `/analytics`, `/settings`), cookies de sesión seguras con `HttpOnly`, `SameSite=Strict`, e inyección de encabezados HTTP defensivos (CSP, HSTS, X-Frame-Options: DENY). |
+| **Capacitor (Ionic) [Fase 6 Programada]** | *Próxima* | **Vía Híbrida / Empaquetado Nativo Móvil**: Empaquetado de la aplicación Next.js en ejecutables nativos para iOS y Android, permitiendo acceso a APIs reales del dispositivo (vibración háptica al soltar tarjetas Kanban, notificaciones push nativas y gestión de barra de estado). |
+| **Robocopy (Robust File Copy)** | Sistema Windows | **Sincronización Segura de Repositorio**: Espejeado exacto entre el entorno de trabajo sandbox (`scratch\nexus-pulse`) y el repositorio de escritorio (`Desktop\NexusPulse`), excluyendo directorios pesados (`.git`, `.next`, `node_modules`). |
+| **Git (Local Version Control)** | Sistema | **Control de Versiones Riguroso**: Historial atómico paso a paso siguiendo la convención de commits (`feat`, `style`, `fix`, `docs`), reteniendo el código 100% en local sin ejecutar push remoto a GitHub hasta la fase final. |
 
 ---
 
@@ -167,14 +195,16 @@ Separar de forma limpia el estado del servidor (*Server State*) del estado de la
 
 ---
 
-## Hoja de Ruta para Próximas Fases
+## Hoja de Ruta Actualizada para Próximas Fases
 
 * [x] **Fase 1: Arquitectura Base, Design System e i18n** *(Completado)*
 * [x] **Fase 2: SaaS Shell, Command Palette y Multi-Usuario RBAC** *(Completado)*
 * [x] **Fase 3: Tablero Kanban Interactivo & Zod Validation** *(Completado)*
 * [x] **Módulo de Seguridad: Edge Middleware, Cookies HttpOnly y Security Headers** *(Completado)*
-* [x] **Fase 4: Gestión de Estado Asíncrono & Optimistic UI (TanStack Query)** *(Completado)*
-* [ ] **Fase 5: Métricas Operativas & Telemetría en Tiempo Real (Analytics Dashboard)**
-* [ ] **Fase 6: Testing Automatizado con Jest / React Testing Library & Vitest**
-* [ ] **Fase 7: Auditoría Final, Producción y Push a GitHub**
+* [x] **Fase 4: Gestión de Estado Asíncrono & Optimistic UI (TanStack Query v5 & Animaciones de Modales)** *(Completado)*
+* [ ] **Fase 5: Motor de Workflows & Automatizaciones Operativas (Pipelines, Triggers de Eventos y Ejecución en Tiempo Real)**
+* [ ] **Fase 6: Versión Mobile App mediante Vía Híbrida / Empaquetado Nativo: Capacitor (Ionic)** *(Sincronización multiplataforma, feedback háptico en drag-and-drop, notificaciones push nativas y empaquetado para iOS/Android)*
+* [ ] **Fase 7: Métricas Operativas & Telemetría en Tiempo Real (Analytics Dashboard)**
+* [ ] **Fase 8: Suite de Testing Automatizado con Jest / React Testing Library & Vitest**
+* [ ] **Fase 9: Auditoría Final de Rendimiento, Optimización de Producción y Push Remoto a GitHub**
 

@@ -96,9 +96,11 @@ Detailed technical documentation, architectural decisions, and verification reco
 - [x] **Fase 2:** SaaS Application Shell, Collapsible Sidebar, Breadcrumbs, Command Palette (`⌘K`), and Multi-User RBAC.
 - [x] **Fase 3:** Interactive Kanban Board (`@dnd-kit`), Zustand CRUD state, and Zod runtime schema validation.
 - [x] **Capa de Seguridad:** Next.js Edge Middleware route protection, secure `HttpOnly` session cookies, and HTTP security headers (CSP, HSTS, X-Frame-Options: DENY).
-- [x] **Fase 4:** Server State & Optimistic UI with TanStack Query (0ms optimistic latency & automatic rollback).
-- [ ] **Fase 5:** Real-time Operational Telemetry & Analytics Dashboard.
-- [ ] **Fase 6:** Automated Testing Suite with Jest / React Testing Library & Vitest.
-- [ ] **Fase 7:** Final Production Build & Remote Push to GitHub.
+- [x] **Fase 4:** Server State & Optimistic UI with TanStack Query (0ms optimistic latency, automatic error rollback & modal physics).
+- [ ] **Fase 5:** Interactive Workflows & Operational Automations Engine (Event Triggers, Pipelines & Real-time Runner).
+- [ ] **Fase 6:** Mobile App via Hybrid / Native Packaging with Capacitor (Ionic) (Cross-platform packaging, haptic DnD feedback, push notifications & iOS/Android builds).
+- [ ] **Fase 7:** Real-time Operational Telemetry & Analytics Dashboard.
+- [ ] **Fase 8:** Automated Testing Suite with Jest / React Testing Library & Vitest.
+- [ ] **Fase 9:** Final Production Build, Performance Audits & Remote Push to GitHub.
 
 
