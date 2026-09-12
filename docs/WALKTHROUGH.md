@@ -134,13 +134,45 @@ Al recargar la página en rutas que consumen datos del cliente (`/board`), Next.
 
 ---
 
+## Fase 4: Gestión de Estado Asíncrono & Optimistic UI (TanStack Query v5)
+
+### Objetivos y Alcance
+Separar de forma limpia el estado del servidor (*Server State*) del estado de la interfaz (*Client UI State*). Implementar mutaciones optimistas (*Optimistic Updates*) con latencia percibida de 0ms, rollback automático ante rechazos de red y persistencia asíncrona a través de una API REST de endpoints Next.js.
+
+### Arquitectura y Componentes Clave
+* **Proveedor de Contexto Query (`src/components/query-provider.tsx`)**:
+  * Configuración singleton/request-scoped de `QueryClient` compatible con SSR y Next.js App Router.
+  * Estrategia de reintentos (`retry: 1`) y tiempo de obsolescencia (`staleTime: 60s`).
+* **Endpoints de Servidor REST (`src/app/api/tasks/`)**:
+  * `GET /api/tasks`: Filtrado dinámico por texto, prioridad y responsable con latencia de red simulada (120ms).
+  * `POST /api/tasks`: Creación con validación estricta en tiempo de ejecución (Zod) y soporte para error de prueba.
+  * `PATCH /api/tasks/[id]`: Actualización y movimiento entre columnas. Soporte para el parámetro `?simulateError=true` para auditoría interactiva de rollback.
+  * `DELETE /api/tasks/[id]`: Eliminación de tareas con reversión automática en caso de fallo.
+* **Hooks de Mutaciones Optimistas (`src/hooks/use-tasks-query.ts`)**:
+  * `useTasksQuery(filters)`: Suscripción a la caché reactiva de TanStack Query (`queryKey: ['tasks', filters]`).
+  * `useMoveTaskMutation()`:
+    1. **`onMutate`**: Cancela consultas salientes, toma un snapshot del estado previo (`previousTasks`) y mueve inmediatamente la tarjeta en la caché local (latencia percibida: 0ms).
+    2. **`onError`**: Si el servidor responde con error (HTTP 500), ejecuta el **Rollback Automático**, restaurando la tarea a su columna original y disparando un toast contextual ámbar.
+    3. **`onSuccess`**: Notifica la persistencia exitosa en el backend.
+    4. **`onSettled`**: Invalida la query para resincronizar el estado canónico con el servidor.
+  * `useCreateTaskMutation()` y `useDeleteTaskMutation()`: Creación y eliminación optimista con reversión inmediata ante contingencias de red.
+* **Sistema Flotante de Notificaciones (`src/components/ui/optimistic-toast.tsx`, `src/stores/notification-store.ts`)**:
+  * Notificaciones con micro-animaciones en Framer Motion (`popLayout`).
+  * Estados semánticos: `rollback` (alerta ámbar con icono de reversión), `success` (confirmación esmeralda).
+* **Controles Interactivos en `KanbanToolbar` (`src/components/kanban/kanban-toolbar.tsx`)**:
+  * **Indicador en Tiempo Real**: Badge minimalista con pulso (`🟢 Sincronizado` / `🔄 Sincronizando...`) respaldado por `useIsFetching`.
+  * **Conmutador de Simulación de Error de Red**: Botón `[Simular Error de Red]` que permite a evaluadores y reclutadores forzar un fallo del servidor en caliente para observar la animación y el rollback automático en directo.
+
+---
+
 ## Hoja de Ruta para Próximas Fases
 
 * [x] **Fase 1: Arquitectura Base, Design System e i18n** *(Completado)*
 * [x] **Fase 2: SaaS Shell, Command Palette y Multi-Usuario RBAC** *(Completado)*
 * [x] **Fase 3: Tablero Kanban Interactivo & Zod Validation** *(Completado)*
 * [x] **Módulo de Seguridad: Edge Middleware, Cookies HttpOnly y Security Headers** *(Completado)*
-* [ ] **Fase 4: Gestión de Estado Asíncrono & Optimistic UI (TanStack Query)**
-* [ ] **Fase 5: Métricas Operativas & Telemetría en Tiempo Real (Analytics)**
+* [x] **Fase 4: Gestión de Estado Asíncrono & Optimistic UI (TanStack Query)** *(Completado)*
+* [ ] **Fase 5: Métricas Operativas & Telemetría en Tiempo Real (Analytics Dashboard)**
 * [ ] **Fase 6: Testing Automatizado con Jest / React Testing Library & Vitest**
 * [ ] **Fase 7: Auditoría Final, Producción y Push a GitHub**
+
