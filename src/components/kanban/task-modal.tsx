@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { useTaskStore } from "@/stores/task-store";
 import { useLanguage } from "@/components/language-provider";
 import { taskSchema, type TaskInput } from "@/lib/validations/task";
@@ -32,26 +33,36 @@ export function TaskModal() {
   const [tagsInput, setTagsInput] = React.useState("");
   const [error, setError] = React.useState<string | null>(null);
 
+  // Preserve editing headers during exit animation
+  const isEditingRef = React.useRef(false);
+  const activeTaskIdRef = React.useRef<string | null>(null);
+
   // Sync state when modal opens for create or edit
   React.useEffect(() => {
-    if (editingTask) {
-      setTitle(editingTask.title);
-      setDescription(editingTask.description || "");
-      setStatus(editingTask.status);
-      setPriority(editingTask.priority);
-      setAssigneeId(editingTask.assignee?.id || DEMO_USERS[0].id);
-      setEstimateHours(editingTask.estimateHours ? String(editingTask.estimateHours) : "");
-      setTagsInput(editingTask.tags ? editingTask.tags.join(", ") : "");
-    } else {
-      setTitle("");
-      setDescription("");
-      setStatus(defaultStatusForNew);
-      setPriority("medium");
-      setAssigneeId(DEMO_USERS[0].id);
-      setEstimateHours("4");
-      setTagsInput("");
+    if (isTaskModalOpen) {
+      if (editingTask) {
+        isEditingRef.current = true;
+        activeTaskIdRef.current = editingTask.id;
+        setTitle(editingTask.title);
+        setDescription(editingTask.description || "");
+        setStatus(editingTask.status);
+        setPriority(editingTask.priority);
+        setAssigneeId(editingTask.assignee?.id || DEMO_USERS[0].id);
+        setEstimateHours(editingTask.estimateHours ? String(editingTask.estimateHours) : "");
+        setTagsInput(editingTask.tags ? editingTask.tags.join(", ") : "");
+      } else {
+        isEditingRef.current = false;
+        activeTaskIdRef.current = null;
+        setTitle("");
+        setDescription("");
+        setStatus(defaultStatusForNew);
+        setPriority("medium");
+        setAssigneeId(DEMO_USERS[0].id);
+        setEstimateHours("4");
+        setTagsInput("");
+      }
+      setError(null);
     }
-    setError(null);
   }, [editingTask, defaultStatusForNew, isTaskModalOpen]);
 
   // Keyboard shortcut: close with Escape
@@ -64,8 +75,6 @@ export function TaskModal() {
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isTaskModalOpen, closeTaskModal]);
-
-  if (!isTaskModalOpen) return null;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -111,36 +120,53 @@ export function TaskModal() {
   };
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm animate-in fade-in-0 duration-150"
-      onClick={closeTaskModal}
-    >
-      <div
-        className="w-full max-w-lg rounded-2xl border border-border/60 bg-card text-card-foreground shadow-2xl p-6 space-y-5 animate-in zoom-in-95 duration-150"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* Modal Header */}
-        <div className="flex items-center justify-between border-b border-border/40 pb-3">
-          <div>
-            <h3 className="text-base font-semibold text-foreground">
-              {editingTask ? t.kanban.modal.editTitle : t.kanban.modal.createTitle}
-            </h3>
-            {editingTask && (
-              <span className="text-[11px] font-mono text-muted-foreground">
-                {editingTask.id}
-              </span>
-            )}
-          </div>
-
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={closeTaskModal}
-            className="h-7 w-7 text-muted-foreground hover:text-foreground"
+    <AnimatePresence>
+      {isTaskModalOpen && (
+        <motion.div
+          key="task-modal-backdrop"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.18, ease: "easeOut" }}
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm"
+          onClick={closeTaskModal}
+        >
+          <motion.div
+            key="task-modal-card"
+            initial={{ opacity: 0, scale: 0.94, y: 16 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.96, y: 10 }}
+            transition={{
+              type: "spring",
+              damping: 26,
+              stiffness: 350,
+              mass: 0.8,
+            }}
+            className="w-full max-w-lg rounded-2xl border border-border/60 bg-card text-card-foreground shadow-2xl p-6 space-y-5"
+            onClick={(e) => e.stopPropagation()}
           >
-            <X className="h-4 w-4" />
-          </Button>
-        </div>
+            {/* Modal Header */}
+            <div className="flex items-center justify-between border-b border-border/40 pb-3">
+              <div>
+                <h3 className="text-base font-semibold text-foreground">
+                  {isEditingRef.current ? t.kanban.modal.editTitle : t.kanban.modal.createTitle}
+                </h3>
+                {isEditingRef.current && activeTaskIdRef.current && (
+                  <span className="text-[11px] font-mono text-muted-foreground">
+                    {activeTaskIdRef.current}
+                  </span>
+                )}
+              </div>
+
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={closeTaskModal}
+                className="h-7 w-7 text-muted-foreground hover:text-foreground"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
 
         {/* Error Alert if Validation Fails */}
         {error && (
@@ -284,7 +310,9 @@ export function TaskModal() {
             </Button>
           </div>
         </form>
-      </div>
-    </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }

@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
 import { Command } from "cmdk";
 import { useTheme } from "@/components/theme-provider";
 import { useUIStore } from "@/stores/ui-store";
@@ -41,8 +42,6 @@ export function CommandPalette() {
     return () => document.removeEventListener("keydown", down);
   }, [isCommandPaletteOpen, setCommandPaletteOpen]);
 
-  if (!isCommandPaletteOpen) return null;
-
   const navigateTo = (path: string) => {
     setCommandPaletteOpen(false);
     router.push(path);
@@ -51,14 +50,31 @@ export function CommandPalette() {
   const isDark = resolvedTheme === "dark" || theme === "dark";
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-start justify-center pt-24 sm:pt-32 px-4 bg-background/80 backdrop-blur-sm transition-opacity animate-in fade-in-0 duration-150"
-      onClick={() => setCommandPaletteOpen(false)}
-    >
-      <div
-        className="w-full max-w-xl overflow-hidden rounded-xl border border-border/60 bg-card text-card-foreground shadow-2xl animate-in zoom-in-95 duration-150"
-        onClick={(e) => e.stopPropagation()}
-      >
+    <AnimatePresence>
+      {isCommandPaletteOpen && (
+        <motion.div
+          key="command-palette-backdrop"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.18, ease: "easeOut" }}
+          className="fixed inset-0 z-50 flex items-start justify-center pt-24 sm:pt-32 px-4 bg-background/80 backdrop-blur-sm"
+          onClick={() => setCommandPaletteOpen(false)}
+        >
+          <motion.div
+            key="command-palette-card"
+            initial={{ opacity: 0, scale: 0.95, y: -16 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.97, y: -10 }}
+            transition={{
+              type: "spring",
+              damping: 28,
+              stiffness: 380,
+              mass: 0.7,
+            }}
+            className="w-full max-w-xl overflow-hidden rounded-xl border border-border/60 bg-card text-card-foreground shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
         <Command label={t.shell.commandPalette.title} className="w-full">
           {/* Search Input */}
           <div className="flex items-center border-b border-border/50 px-3.5">
@@ -209,7 +225,9 @@ export function CommandPalette() {
             <span>NexusPulse Shell</span>
           </div>
         </Command>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
+  )}
+    </AnimatePresence>
   );
 }

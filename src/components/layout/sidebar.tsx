@@ -3,6 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
 import { useUIStore } from "@/stores/ui-store";
 import { useLanguage } from "@/components/language-provider";
 import {
@@ -175,19 +176,31 @@ export function Sidebar() {
       </aside>
 
       {/* Mobile Drawer Overlay */}
-      {isMobileSidebarOpen && (
-        <div
-          className="fixed inset-0 z-40 bg-background/80 backdrop-blur-sm md:hidden animate-in fade-in-0 duration-150"
-          onClick={() => setMobileSidebarOpen(false)}
-        >
-          <div
-            className="fixed inset-y-0 left-0 z-50 w-64 bg-card border-r border-border shadow-2xl animate-in slide-in-from-left duration-200"
-            onClick={(e) => e.stopPropagation()}
+      <AnimatePresence>
+        {isMobileSidebarOpen && (
+          <motion.div
+            key="mobile-sidebar-backdrop"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
+            className="fixed inset-0 z-40 bg-background/80 backdrop-blur-sm md:hidden"
+            onClick={() => setMobileSidebarOpen(false)}
           >
-            {sidebarContent}
-          </div>
-        </div>
-      )}
+            <motion.div
+              key="mobile-sidebar-drawer"
+              initial={{ x: "-100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "-100%" }}
+              transition={{ type: "spring", damping: 28, stiffness: 320 }}
+              className="fixed inset-y-0 left-0 z-50 w-64 bg-card border-r border-border shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {sidebarContent}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 }

@@ -159,9 +159,11 @@ Separar de forma limpia el estado del servidor (*Server State*) del estado de la
 * **Sistema Flotante de Notificaciones (`src/components/ui/optimistic-toast.tsx`, `src/stores/notification-store.ts`)**:
   * Notificaciones con micro-animaciones en Framer Motion (`popLayout`).
   * Estados semánticos: `rollback` (alerta ámbar con icono de reversión), `success` (confirmación esmeralda).
-* **Controles Interactivos en `KanbanToolbar` (`src/components/kanban/kanban-toolbar.tsx`)**:
-  * **Indicador en Tiempo Real**: Badge minimalista con pulso (`🟢 Sincronizado` / `🔄 Sincronizando...`) respaldado por `useIsFetching`.
-  * **Conmutador de Simulación de Error de Red**: Botón `[Simular Error de Red]` que permite a evaluadores y reclutadores forzar un fallo del servidor en caliente para observar la animación y el rollback automático en directo.
+* **Micro-Interacciones & Animaciones Fluidas de Modales (`framer-motion`)**:
+  * **Transiciones Físicas Tipo Resorte (*Spring*)**: Implementación de `AnimatePresence` en `TaskModal` (`src/components/kanban/task-modal.tsx`), `CommandPalette` (`src/components/layout/command-palette.tsx`) y el Drawer móvil de `Sidebar` (`src/components/layout/sidebar.tsx`).
+  * **Backdrop con Desenfoque Orgánico**: Desvanecimiento suave (`opacity: 0` → `opacity: 1`) con `backdrop-blur-sm`.
+  * **Animación de Entrada y Salida Simétrica**: Eliminación de desmontajes abruptos (`if (!isOpen) return null;`) reemplazados por curvas de aceleración elásticas (`damping: 26, stiffness: 350, mass: 0.8`), brindando una experiencia táctil de nivel senior tipo macOS/Linear.
+  * **Preservación de Estado Durante Salida**: Uso de referencias `useRef` para retener los títulos y datos de la tarea durante los ~200ms de transición de cierre, evitando cualquier salto visual o parpadeo de texto (*flicker*).
 
 ---
 
