@@ -79,4 +79,22 @@ describe("Workflow Schema Validation (Zod)", () => {
       expect(result.data.status).toBe("active");
     }
   });
+
+  it("should accept 'in_app_notification' as a valid actionType", () => {
+    const inAppWorkflow = {
+      name: "Alerta In-App de Tarea",
+      description: "Notifica dentro de la app cuando la tarea finaliza",
+      trigger: "event",
+      triggerDetail: "task.status == 'done'",
+      actionType: "in_app_notification",
+      actionLabel: "Emitir toast reactivo",
+      status: "active",
+    };
+
+    const result = workflowSchema.safeParse(inAppWorkflow);
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.actionType).toBe("in_app_notification");
+    }
+  });
 });

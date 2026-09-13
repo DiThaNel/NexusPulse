@@ -265,6 +265,40 @@ export const WORKFLOW_TRANSLATIONS: Record<string, WorkflowTranslation> = {
       },
     },
   },
+  "wf-5": {
+    name: {
+      es: "Notificación In-App al Completar Tarea",
+      en: "In-App Alert on Task Completion",
+    },
+    description: {
+      es: "Monitorea eventos del Kanban. Cuando una tarea pasa a 'Completado', emite una alerta visual en la aplicación y registra telemetría operativa.",
+      en: "Monitors Kanban events. When a task is moved to 'Done', triggers a visual in-app notification and logs operational telemetry.",
+    },
+    lastRunAt: {
+      es: "Hace 10 minutos",
+      en: "10 minutes ago",
+    },
+    steps: {
+      "step-5-1": {
+        name: {
+          es: "Escucha de Tareas Completadas",
+          en: "Task Completed Listener",
+        },
+      },
+      "step-5-2": {
+        name: {
+          es: "Guardia de Workflow & Seguridad",
+          en: "Active Workflow & Security Guard",
+        },
+      },
+      "step-5-3": {
+        name: {
+          es: "Despachador Reactivo In-App",
+          en: "In-App Reactive Dispatcher",
+        },
+      },
+    },
+  },
 };
 
 /**

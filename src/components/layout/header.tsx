@@ -8,6 +8,7 @@ import { useAuthStore } from "@/stores/auth-store";
 import { useLanguage } from "@/components/language-provider";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { LanguageToggle } from "@/components/language-toggle";
+import { NotificationBell } from "@/components/layout/notification-bell";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ChevronRight, Menu, Search } from "lucide-react";
@@ -58,7 +59,7 @@ export function Header() {
         </nav>
       </div>
 
-      {/* Right side: Role badge + Command Palette trigger + Language + Theme */}
+      {/* Right side: Role badge + Command Palette trigger + Notification Bell + Language + Theme */}
       <div className="flex items-center gap-2 sm:gap-2.5">
         {mounted && user?.role === "viewer" && (
           <Badge
@@ -85,6 +86,9 @@ export function Header() {
             ⌘K
           </kbd>
         </Button>
+
+        {/* Automated Workflows Notification Center */}
+        <NotificationBell />
 
         {/* Language switcher */}
         <LanguageToggle />

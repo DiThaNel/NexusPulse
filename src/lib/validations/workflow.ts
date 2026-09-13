@@ -22,6 +22,7 @@ export const workflowSchema = z.object({
     "github_deploy",
     "database_archive",
     "task_auto_assign",
+    "in_app_notification",
   ]),
   actionLabel: z
     .string()

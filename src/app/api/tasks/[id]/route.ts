@@ -5,7 +5,8 @@ import {
   deleteServerTask,
   simulateNetworkLatency,
 } from "@/lib/server-tasks";
-import { type TaskStatus } from "@/types";
+import { triggerTaskWorkflows } from "@/lib/server-workflows";
+import { type TaskStatus, type TriggeredWorkflowResult } from "@/types";
 
 export async function PATCH(
   request: NextRequest,
@@ -48,7 +49,18 @@ export async function PATCH(
           { status: 404 }
         );
       }
-      return NextResponse.json({ success: true, task: moved });
+
+      // If task was moved to "done", trigger reactive event workflows
+      let triggeredWorkflows: TriggeredWorkflowResult[] = [];
+      if (body.status === "done") {
+        triggeredWorkflows = await triggerTaskWorkflows(moved);
+      }
+
+      return NextResponse.json({
+        success: true,
+        task: moved,
+        triggeredWorkflows,
+      });
     }
 
     // General updates
@@ -60,7 +72,16 @@ export async function PATCH(
       );
     }
 
-    return NextResponse.json({ success: true, task: updated });
+    let triggeredWorkflows: TriggeredWorkflowResult[] = [];
+    if (body.status === "done") {
+      triggeredWorkflows = await triggerTaskWorkflows(updated);
+    }
+
+    return NextResponse.json({
+      success: true,
+      task: updated,
+      triggeredWorkflows,
+    });
   } catch {
     return NextResponse.json(
       { error: "Internal Server Error" },

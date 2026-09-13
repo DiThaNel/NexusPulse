@@ -22,7 +22,7 @@ export function WorkflowModal({ isOpen, onClose }: WorkflowModalProps) {
   const [trigger, setTrigger] = React.useState<"webhook" | "cron" | "event" | "manual">("webhook");
   const [triggerDetail, setTriggerDetail] = React.useState("");
   const [actionType, setActionType] = React.useState<
-    "slack_notify" | "github_deploy" | "database_archive" | "task_auto_assign"
+    "slack_notify" | "github_deploy" | "database_archive" | "task_auto_assign" | "in_app_notification"
   >("github_deploy");
   const [actionLabel, setActionLabel] = React.useState("");
   const [error, setError] = React.useState<string | null>(null);
@@ -211,6 +211,7 @@ export function WorkflowModal({ isOpen, onClose }: WorkflowModalProps) {
                     onChange={(e) => setActionType(e.target.value as any)}
                     className="w-full h-8 px-2.5 rounded-lg border border-border/60 bg-background text-foreground outline-none focus:ring-1 focus:ring-primary"
                   >
+                    <option value="in_app_notification">Notificación en la App (In-App)</option>
                     <option value="github_deploy">Despliegue / CI-CD</option>
                     <option value="slack_notify">Alerta Slack / Ops</option>
                     <option value="database_archive">Archivar Telemetría</option>

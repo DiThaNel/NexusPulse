@@ -8,6 +8,7 @@ import { taskSchema, type TaskInput } from "@/lib/validations/task";
 import { DEMO_USERS, type TaskPriority, type TaskStatus } from "@/types";
 import { useCreateTaskMutation, TASKS_QUERY_KEY } from "@/hooks/use-tasks-query";
 import { useQueryClient } from "@tanstack/react-query";
+import { useNotificationStore } from "@/stores/notification-store";
 import { Button } from "@/components/ui/button";
 import { X, AlertCircle } from "lucide-react";
 
@@ -22,6 +23,7 @@ export function TaskModal() {
     updateTask,
   } = useTaskStore();
 
+  const { showNotification } = useNotificationStore();
   const queryClient = useQueryClient();
   const { mutate: createTaskOptimistic } = useCreateTaskMutation();
   const { t, locale } = useLanguage();
@@ -112,9 +114,21 @@ export function TaskModal() {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(result.data),
-      }).then(() => {
-        queryClient.invalidateQueries({ queryKey: TASKS_QUERY_KEY });
-      });
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data?.triggeredWorkflows && Array.isArray(data.triggeredWorkflows)) {
+            data.triggeredWorkflows.forEach((tw: any) => {
+              showNotification("workflow", tw.title, tw.message);
+            });
+            queryClient.invalidateQueries({ queryKey: ["workflows"] });
+          }
+          queryClient.invalidateQueries({ queryKey: TASKS_QUERY_KEY });
+          queryClient.invalidateQueries({ queryKey: ["analytics"] });
+        })
+        .catch(() => {
+          queryClient.invalidateQueries({ queryKey: TASKS_QUERY_KEY });
+        });
     } else {
       createTaskOptimistic(result.data);
     }

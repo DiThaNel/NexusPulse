@@ -62,9 +62,24 @@ export interface WorkflowStep {
   id: string;
   name: string;
   type: "trigger" | "condition" | "action";
-  actionType?: "slack_notify" | "github_deploy" | "database_archive" | "task_auto_assign";
+  actionType?:
+    | "slack_notify"
+    | "github_deploy"
+    | "database_archive"
+    | "task_auto_assign"
+    | "in_app_notification";
   configLabel: string;
   status?: "idle" | "running" | "success" | "failure";
+}
+
+export interface TriggeredWorkflowResult {
+  workflowId: string;
+  workflowName: string;
+  actionType: string;
+  title: string;
+  message: string;
+  taskId: string;
+  timestamp: string;
 }
 
 export interface WorkflowRunLog {

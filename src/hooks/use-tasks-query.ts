@@ -127,18 +127,25 @@ export function useMoveTaskMutation(filters?: TaskFilters) {
     },
 
     // 3. Success feedback
-    onSuccess: () => {
-      showNotification(
-        "success",
-        "Sincronizado con el Servidor",
-        "Cambio persistido en el backend a través de TanStack Query."
-      );
+    onSuccess: (data: any) => {
+      if (data?.triggeredWorkflows && Array.isArray(data.triggeredWorkflows) && data.triggeredWorkflows.length > 0) {
+        data.triggeredWorkflows.forEach((tw: any) => {
+          showNotification("workflow", tw.title, tw.message);
+        });
+      } else {
+        showNotification(
+          "success",
+          "Sincronizado con el Servidor",
+          "Cambio persistido en el backend a través de TanStack Query."
+        );
+      }
     },
 
-    // 4. Invalidate to refetch fresh server state and update analytics
+    // 4. Invalidate to refetch fresh server state, analytics and workflows
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: TASKS_QUERY_KEY });
       queryClient.invalidateQueries({ queryKey: ["analytics"] });
+      queryClient.invalidateQueries({ queryKey: ["workflows"] });
     },
   });
 }

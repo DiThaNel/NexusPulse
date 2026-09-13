@@ -1,4 +1,4 @@
-import { Workflow, WorkflowRunLog, WorkflowStep } from "@/types";
+import { Workflow, WorkflowRunLog, WorkflowStep, Task, TriggeredWorkflowResult } from "@/types";
 import { WorkflowInput } from "@/lib/validations/workflow";
 import { addServerTelemetry } from "./server-telemetry";
 
@@ -179,6 +179,62 @@ let workflowsDb: Workflow[] = [
         type: "action",
         actionType: "database_archive",
         configLabel: "Export payload to long-term storage",
+      },
+    ],
+  },
+  {
+    id: "wf-5",
+    name: "Notificación In-App al Completar Tarea",
+    description: "Monitorea eventos del Kanban. Cuando una tarea pasa a 'Completado', emite una alerta visual en la aplicación y registra telemetría operativa.",
+    trigger: "event",
+    triggerDetail: "task.status == 'done'",
+    status: "active",
+    runsCount: 18,
+    successRate: 100,
+    lastRunAt: "Hace 10 minutos",
+    lastRunStatus: "success",
+    steps: [
+      {
+        id: "step-5-1",
+        name: "Kanban Task Completed Listener",
+        type: "trigger",
+        configLabel: "Event: kanban.task.status_changed (target: 'done')",
+      },
+      {
+        id: "step-5-2",
+        name: "Active Workflow & Security Guard",
+        type: "condition",
+        configLabel: "workflow.status == 'active' && task.id != null",
+      },
+      {
+        id: "step-5-3",
+        name: "In-App Reactive Dispatcher",
+        type: "action",
+        actionType: "in_app_notification",
+        configLabel: "Dispatch high-priority in-app toast & notification center alert",
+      },
+    ],
+    recentLogs: [
+      {
+        id: "log-5-1",
+        timestamp: "04:10:12",
+        level: "info",
+        message: "Escuchador de eventos Kanban activo: Esperando tareas completadas.",
+        stepId: "step-5-1",
+      },
+      {
+        id: "log-5-2",
+        timestamp: "04:10:13",
+        level: "info",
+        message: "Condición de ejecución verificada: Workflow activo y payload de tarea válido.",
+        stepId: "step-5-2",
+      },
+      {
+        id: "log-5-3",
+        timestamp: "04:10:13",
+        level: "success",
+        message: "Notificación reactiva despachada a la aplicación con éxito.",
+        stepId: "step-5-3",
       },
     ],
   },
@@ -372,4 +428,87 @@ export async function runServerWorkflow(
     workflow: workflowsDb[index],
     generatedLogs,
   };
+}
+
+/**
+ * Evaluates active event workflows when a task is completed (status == 'done').
+ * Runs the matching pipeline, increments runs count, generates logs, records telemetry,
+ * and returns notification payloads to be rendered in the application client.
+ */
+export async function triggerTaskWorkflows(task: Task): Promise<TriggeredWorkflowResult[]> {
+  const triggered: TriggeredWorkflowResult[] = [];
+  const now = new Date();
+  const timeStr = now.toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  });
+
+  for (let i = 0; i < workflowsDb.length; i++) {
+    const wf = workflowsDb[i];
+    // Check if workflow is an active event workflow listening for completed tasks
+    if (
+      wf.trigger === "event" &&
+      wf.status === "active" &&
+      (wf.triggerDetail.includes("done") || wf.triggerDetail.includes("task.status"))
+    ) {
+      const isNotification = wf.steps.some(
+        (s) => s.actionType === "in_app_notification" || s.name.toLowerCase().includes("in-app")
+      );
+
+      const generatedLogs: WorkflowRunLog[] = [
+        {
+          id: `log-${Date.now()}-1`,
+          timestamp: timeStr,
+          level: "info",
+          message: `[DISPARADOR] Evento detectado: Tarea '${task.id}: ${task.title.slice(0, 32)}...' marcada como 'Completado'.`,
+          stepId: wf.steps[0]?.id,
+        },
+        {
+          id: `log-${Date.now()}-2`,
+          timestamp: timeStr,
+          level: "info",
+          message: `[EVALUACIÓN] Workflow activo. Canal de entrega: ${
+            isNotification ? "Notificación In-App Reactiva" : wf.steps[2]?.name || "Acción Automática"
+          }.`,
+          stepId: wf.steps[1]?.id,
+        },
+        {
+          id: `log-${Date.now()}-3`,
+          timestamp: timeStr,
+          level: "success",
+          message: `[ÉXITO] Pipeline completado en 14ms. Notificación emitida para ${task.assignee?.name || "el equipo"}.`,
+          stepId: wf.steps[2]?.id,
+        },
+      ];
+
+      workflowsDb[i] = {
+        ...wf,
+        runsCount: wf.runsCount + 1,
+        lastRunAt: "Justo ahora",
+        lastRunStatus: "success",
+        recentLogs: generatedLogs,
+      };
+
+      addServerTelemetry({
+        actor: "Workflow Engine",
+        action: "WORKFLOW_TRIGGERED",
+        target: `${wf.name} (${task.id})`,
+        latencyMs: 14,
+        status: "200 OK",
+      });
+
+      triggered.push({
+        workflowId: wf.id,
+        workflowName: wf.name,
+        actionType: wf.steps[2]?.actionType || "in_app_notification",
+        title: `⚡ Workflow: ${wf.name}`,
+        message: `La tarea "${task.id}: ${task.title}" fue completada. Automatización ejecutada con éxito.`,
+        taskId: task.id,
+        timestamp: new Date().toISOString(),
+      });
+    }
+  }
+
+  return triggered;
 }
