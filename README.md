@@ -14,7 +14,7 @@ Built with strict enterprise engineering standards, clean architecture, zero-hyd
 
 ---
 
-## 📑 Table of Contents
+## Table of Contents
 
 1. [Key Features](#-key-features)
 2. [Core Architecture & Tech Stack](#-core-architecture--tech-stack)
@@ -27,7 +27,7 @@ Built with strict enterprise engineering standards, clean architecture, zero-hyd
 
 ---
 
-## 🚀 Key Features
+## Key Features
 
 ### 1. Interactive Kanban Board (`@dnd-kit` + Zod)
 * **Accessible Pointer & Keyboard Drag-and-Drop**: Multi-column sorting (`Backlog`, `To Do`, `In Progress`, `In Review`, `Done`) with collision detection (`closestCorners`).
@@ -59,7 +59,7 @@ Built with strict enterprise engineering standards, clean architecture, zero-hyd
 
 ---
 
-## 🛠️ Core Architecture & Tech Stack
+## Core Architecture & Tech Stack
 
 | Technology | Version | Purpose in NexusPulse |
 | :--- | :--- | :--- |
@@ -73,65 +73,6 @@ Built with strict enterprise engineering standards, clean architecture, zero-hyd
 | **Zod** | `4.6.2` | Runtime validation for task schemas, workflow payloads, and API contracts. |
 | **Framer Motion** | `13.2.0` | Tactile spring physics for modals, Command Palette (`⌘K`), popLayout toasts, and SVG tooltips. |
 | **Vitest & RTL** | `5.0.0` / `16.3.3` | Ultra-fast ESM testing suite with isolated providers and 100% pass rate across 52 tests. |
-
----
-
-## ☁️ Deployment to Vercel
-
-NexusPulse is architected for zero-configuration, native deployment on **Vercel**.
-
-### Option A: 1-Click Git Integration (Recommended for Recruiters)
-1. Push your repository commits to GitHub:
-   ```bash
-   git push origin main
-   ```
-2. Navigate to [vercel.com/new](https://vercel.com/new).
-3. Import the `DiThaNel/NexusPulse` repository.
-4. Framework preset **Next.js** is automatically detected. Click **Deploy**.
-5. Your production SaaS app is live globally on Vercel's Edge Network with automatic CI/CD preview deployments!
-
-### Option B: Deploy via Vercel CLI
-```bash
-# Authenticate with Vercel
-npx vercel login
-
-# Deploy a preview build
-npx vercel
-
-# Deploy directly to production
-npx vercel --prod
-```
-
-The repository includes a pre-configured [vercel.json](./vercel.json) ensuring clean routing and header handling.
-
----
-
-## 💻 Getting Started (Local Development)
-
-### Prerequisites
-* **Node.js**: v18.17+ or v20+ (tested on Node v24)
-* **npm** / **pnpm** / **yarn**
-
-### Quick Start
-
-```bash
-# 1. Clone the repository
-git clone https://github.com/DiThaNel/NexusPulse.git
-cd NexusPulse
-
-# 2. Install dependencies
-npm install
-
-# 3. Start local development server (with Turbopack)
-npm run dev
-
-# 4. Open http://localhost:3000 in your browser
-```
-
-### Pre-Configured Demo Accounts (1-Click Login)
-* **Administrator**: `admin@nexuspulse.io` / `admin123` (Gabriel Gonçalves — full privileges)
-* **Project Manager**: `pm@nexuspulse.io` / `pm123` (Elena Rostova — project & task management)
-* **Auditor / Viewer**: `viewer@nexuspulse.io` / `viewer123` (Lucas Silva — read-only mode)
 
 ---
 
@@ -155,7 +96,7 @@ npm run test:watch
 
 ---
 
-## 📁 Project Directory Structure
+## Project Directory Structure
 
 ```
 nexus-pulse/
@@ -191,7 +132,7 @@ nexus-pulse/
 
 ---
 
-## 🗺️ Engineering Roadmap
+## Engineering Roadmap
 
 - [x] **Phase 1:** Core Foundations, Strict TypeScript, Tailwind v4 Design Tokens, ThemeProvider, Bilingual i18n Engine (ES/EN), and CVA Atomic Components.
 - [x] **Phase 2:** SaaS Application Shell, Collapsible Responsive Sidebar, Dynamic Breadcrumbs, Command Palette (`⌘K`), and Multi-User RBAC.
@@ -207,14 +148,14 @@ nexus-pulse/
 
 ---
 
-## 📖 Comprehensive Documentation
+## Comprehensive Documentation
 
 For a deep dive into architectural design decisions, performance benchmarks, and phase-by-phase implementation notes, please refer to the technical walkthrough:
 
-👉 [**docs/WALKTHROUGH.md**](./docs/WALKTHROUGH.md)
+[**docs/WALKTHROUGH.md**](./docs/WALKTHROUGH.md)
 
 ---
 
-## 📄 License
+## License
 
 This project is licensed under the [MIT License](LICENSE).
