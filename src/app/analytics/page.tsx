@@ -134,7 +134,7 @@ export default function AnalyticsPage() {
           <KpiMetricCard
             label={t.analytics.kpi.workflowSuccess}
             value={`${analytics.overview.workflowSuccessRate}%`}
-            detail={`${analytics.overview.workflowRuns.toLocaleString()} ejecuciones registradas`}
+            detail={`${analytics.overview.workflowRuns.toLocaleString()} ${t.analytics.kpi.workflowRunsRecorded}`}
             icon={<CheckCircle2 className="h-4 w-4 text-purple-500" />}
           />
 

@@ -102,7 +102,10 @@ export const es = {
       readOnlyTooltip: "Modo solo lectura (Viewer)",
       deleteTask: "Eliminar tarea",
       editTask: "Editar tarea",
+      dragToMove: "Arrastrar para mover",
     },
+    emptyColumn: "Sin tareas",
+    addTaskTo: "Añadir tarea a",
     modal: {
       createTitle: "Crear Nueva Tarea",
       editTitle: "Editar Tarea",
@@ -124,11 +127,16 @@ export const es = {
       },
     },
     readOnlyBanner: "Estás navegando como Viewer (Solo Lectura). El movimiento y edición de tareas está inhabilitado.",
+    toolbarTooltips: {
+      simulateError: "Simula un fallo en el servidor al mover tarjetas para observar el Rollback Optimista",
+    },
   },
   workflows: {
     title: "Automatizaciones & Workflows",
     subtitle: "Orquestación de eventos en vivo, pipelines por etapas y ejecución con telemetría.",
     newWorkflowBtn: "Nuevo Workflow",
+    refreshServerState: "Refrescar estado del servidor",
+    neverRun: "Nunca",
     searchPlaceholder: "Buscar por nombre, disparador o descripción...",
     filters: {
       all: "Todos los Estados",
@@ -203,6 +211,7 @@ export const es = {
       cycleTimeDetail: "De 'Por Hacer' a 'Completado'",
       workflowSuccess: "Éxito de Automatizaciones",
       workflowSuccessDetail: "Tasa de ejecuciones 200 OK",
+      workflowRunsRecorded: "ejecuciones registradas",
       slaCompliance: "Cumplimiento de SLA",
       slaComplianceDetail: "Entregas en tiempo objetivo",
     },
@@ -220,6 +229,83 @@ export const es = {
       completed: "Completadas",
       inProgress: "En Progreso",
       backlog: "Backlog / Por Hacer",
+    },
+    telemetry: {
+      clearBtn: "Limpiar",
+      clearTooltip: "Limpiar stream de eventos",
+      emptyTitle: "Stream de telemetría limpio",
+      emptyDesc: "Los nuevos eventos de arrastre de tareas, creación o ejecución de flujos aparecerán aquí en tiempo real.",
+    },
+  },
+  overviewCards: {
+    kanban: {
+      badge: "Tablero Kanban",
+      activeTasks: "Tareas Activas",
+      desc: "Drag & drop con @dnd-kit, mutaciones optimistas y validación Zod.",
+    },
+    workflows: {
+      badge: "Flujos de Trabajo",
+      livePipelines: "Pipelines en Vivo",
+      desc: "Automatizaciones webhook/cron y runner con consola de logs.",
+    },
+    analytics: {
+      badge: "Telemetría en Vivo",
+      coreHealth: "Salud Core",
+      telemetryActive: "Telemetría Activa",
+      desc: "Gráficos SVG zero-hydration y sincronización reactiva en tiempo real.",
+    },
+    commandPalette: {
+      badge: "Command Palette",
+      title: "Búsqueda Rápida",
+      desc: "Navega a cualquier vista o ejecuta acciones por teclado.",
+    },
+  },
+  settingsPage: {
+    subtitle: "Preferencias de usuario, auditoría de seguridad y configuración técnica.",
+    securityCard: {
+      title: "Capa de Seguridad & Middleware Edge",
+      badge: "Activa",
+      desc: "Arquitectura de defensa en profundidad implementada en Next.js App Router.",
+      auditBtn: "Auditar Seguridad",
+      verifying: "Verificando...",
+      items: {
+        edgeGuard: {
+          title: "Edge Middleware Route Guard",
+          status: "200 OK",
+          desc: "Protección en el Edge para /board, /workflows, /analytics y /settings. Redirección automática con parámetro ?redirect=.",
+        },
+        cookie: {
+          title: "Sesión con Cookie HttpOnly",
+          status: "Protegido",
+          desc: "Cookie nexus_session configurada con flags HttpOnly, SameSite=Lax y Path=/. Inmune a robo por inyección XSS.",
+        },
+        headers: {
+          title: "Cabeceras HTTP de Seguridad",
+          status: "CSP & HSTS",
+          desc: "Content Security Policy estricta, X-Frame-Options: DENY contra Clickjacking, nosniff, strict-origin y HSTS preload.",
+        },
+        rbac: {
+          title: "Esquemas Zod & Control RBAC",
+          status: "Runtime Guard",
+          desc: "Sanitización de payloads antes del procesamiento. Rol activo verificado:",
+          noSession: "Sin sesión",
+        },
+      },
+    },
+    preferencesCard: {
+      title: "Preferencias de Interfaz",
+      desc: "Personaliza el tema visual y el idioma de la aplicación.",
+      themeTitle: "Tema Visual",
+      themeDesc: "Alternar entre modo claro y oscuro con soporte SSR nativo en React 19.",
+      langTitle: "Idioma / Localization",
+      langDesc: "Seleccionar Español o Inglés con persistencia en localStorage.",
+    },
+    workspaceCard: {
+      title: "Espacio de Trabajo",
+      desc: "Información de tu organización y credenciales.",
+      planBadge: "Plan Enterprise",
+      nameLabel: "Nombre del Workspace",
+      devLabel: "Desarrollador Responsable",
     },
   },
   hero: {

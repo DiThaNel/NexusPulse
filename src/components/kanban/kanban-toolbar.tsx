@@ -166,7 +166,7 @@ export function KanbanToolbar() {
                 ? "border-amber-500/50 bg-amber-500/10 text-amber-600 dark:text-amber-400 hover:bg-amber-500/20 font-medium"
                 : "border-border/60 text-muted-foreground hover:text-foreground hover:bg-muted/40"
             }`}
-            title="Simula un fallo en el servidor al mover tarjetas para observar el Rollback Optimista"
+            title={t.kanban.toolbarTooltips.simulateError}
           >
             <Zap className={`h-3 w-3 ${simulateError ? "text-amber-500 fill-amber-500" : ""}`} />
             <span className="hidden sm:inline">

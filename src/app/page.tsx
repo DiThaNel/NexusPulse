@@ -133,16 +133,16 @@ export default function HomePage() {
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-muted-foreground flex items-center gap-2">
               <KanbanSquare className="h-3.5 w-3.5 text-primary" />
-              Tablero Kanban
+              {t.overviewCards.kanban.badge}
             </span>
             <ArrowRight className="h-3.5 w-3.5 text-muted-foreground group-hover:translate-x-0.5 transition-transform" />
           </div>
           <div>
             <div className="text-lg font-semibold text-foreground">
-              {tasks.length} Tareas Activas
+              {tasks.length} {t.overviewCards.kanban.activeTasks}
             </div>
             <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">
-              Drag & drop con @dnd-kit, mutaciones optimistas y validación Zod.
+              {t.overviewCards.kanban.desc}
             </p>
           </div>
         </Link>
@@ -155,16 +155,16 @@ export default function HomePage() {
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-muted-foreground flex items-center gap-2">
               <GitFork className="h-3.5 w-3.5 text-emerald-500" />
-              Flujos de Trabajo
+              {t.overviewCards.workflows.badge}
             </span>
             <ArrowRight className="h-3.5 w-3.5 text-muted-foreground group-hover:translate-x-0.5 transition-transform" />
           </div>
           <div>
             <div className="text-lg font-semibold text-foreground">
-              {workflows.length} Pipelines en Vivo
+              {workflows.length} {t.overviewCards.workflows.livePipelines}
             </div>
             <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">
-              Automatizaciones webhook/cron y runner con consola de logs.
+              {t.overviewCards.workflows.desc}
             </p>
           </div>
         </Link>
@@ -177,16 +177,16 @@ export default function HomePage() {
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-muted-foreground flex items-center gap-2">
               <BarChart3 className="h-3.5 w-3.5 text-indigo-500" />
-              Telemetría en Vivo
+              {t.overviewCards.analytics.badge}
             </span>
             <ArrowRight className="h-3.5 w-3.5 text-muted-foreground group-hover:translate-x-0.5 transition-transform" />
           </div>
           <div>
             <div className="text-lg font-semibold text-foreground">
-              {analytics ? `${analytics.overview.workflowSuccessRate}% Salud Core` : "Telemetría Activa"}
+              {analytics ? `${analytics.overview.workflowSuccessRate}% ${t.overviewCards.analytics.coreHealth}` : t.overviewCards.analytics.telemetryActive}
             </div>
             <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">
-              Gráficos SVG zero-hydration y sincronización reactiva en tiempo real.
+              {t.overviewCards.analytics.desc}
             </p>
           </div>
         </Link>
@@ -199,16 +199,16 @@ export default function HomePage() {
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-muted-foreground flex items-center gap-2">
               <Command className="h-3.5 w-3.5 text-amber-500" />
-              Command Palette
+              {t.overviewCards.commandPalette.badge}
             </span>
             <Badge variant="outline" className="text-[10px] font-mono py-0 px-1.5">
               ⌘K
             </Badge>
           </div>
           <div>
-            <div className="text-lg font-semibold text-foreground">Búsqueda Rápida</div>
+            <div className="text-lg font-semibold text-foreground">{t.overviewCards.commandPalette.title}</div>
             <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">
-              Navega a cualquier vista o ejecuta acciones por teclado.
+              {t.overviewCards.commandPalette.desc}
             </p>
           </div>
         </div>

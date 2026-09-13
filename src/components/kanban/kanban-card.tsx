@@ -13,17 +13,21 @@ import { Button } from "@/components/ui/button";
 import { Clock, GripVertical, Lock, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
+import { localizeTask } from "@/lib/translations/card-translations";
+
 interface KanbanCardProps {
   task: Task;
   isOverlay?: boolean;
 }
 
-export function KanbanCard({ task, isOverlay = false }: KanbanCardProps) {
+export function KanbanCard({ task: rawTask, isOverlay = false }: KanbanCardProps) {
   const { openEditModal } = useTaskStore();
   const { canEdit } = useAuthStore();
-  const { t } = useLanguage();
+  const { t, locale } = useLanguage();
   const { mutate: deleteTaskOptimistic } = useDeleteTaskMutation();
   const [showActions, setShowActions] = React.useState(false);
+
+  const task = React.useMemo(() => localizeTask(rawTask, locale), [rawTask, locale]);
 
   const isEditable = canEdit();
 
@@ -118,7 +122,7 @@ export function KanbanCard({ task, isOverlay = false }: KanbanCardProps) {
               {...attributes}
               {...listeners}
               className="opacity-0 group-hover:opacity-60 hover:!opacity-100 cursor-grab active:cursor-grabbing p-0.5 text-muted-foreground rounded hover:bg-muted/60 transition-opacity"
-              title="Arrastrar para mover"
+              title={t.kanban.card.dragToMove}
             >
               <GripVertical className="h-3.5 w-3.5" />
             </div>

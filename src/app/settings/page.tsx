@@ -56,7 +56,7 @@ export default function SettingsPage() {
           {t.shell.nav.settings}
         </h1>
         <p className="text-xs text-muted-foreground mt-0.5">
-          Preferencias de usuario, auditoría de seguridad y configuración técnica.
+          {t.settingsPage.subtitle}
         </p>
       </div>
 
@@ -69,13 +69,13 @@ export default function SettingsPage() {
             </div>
             <div>
               <h2 className="text-sm font-semibold text-foreground flex items-center gap-2">
-                Capa de Seguridad & Middleware Edge
+                {t.settingsPage.securityCard.title}
                 <Badge variant="success" className="text-[10px] py-0 px-1.5">
-                  Activa
+                  {t.settingsPage.securityCard.badge}
                 </Badge>
               </h2>
               <p className="text-xs text-muted-foreground mt-0.5">
-                Arquitectura de defensa en profundidad implementada en Next.js App Router.
+                {t.settingsPage.securityCard.desc}
               </p>
             </div>
           </div>
@@ -88,7 +88,7 @@ export default function SettingsPage() {
             className="h-7 text-xs border-primary/20 bg-background/50 hover:bg-background flex items-center gap-1.5 shrink-0"
           >
             <RefreshCw className={`h-3 w-3 ${isVerifying ? "animate-spin" : ""}`} />
-            <span>{isVerifying ? "Verificando..." : "Auditar Seguridad"}</span>
+            <span>{isVerifying ? t.settingsPage.securityCard.verifying : t.settingsPage.securityCard.auditBtn}</span>
           </Button>
         </div>
 
@@ -98,12 +98,14 @@ export default function SettingsPage() {
             <div className="flex items-center justify-between">
               <span className="text-xs font-medium text-foreground flex items-center gap-1.5">
                 <Lock className="h-3.5 w-3.5 text-primary" />
-                Edge Middleware Route Guard
+                {t.settingsPage.securityCard.items.edgeGuard.title}
               </span>
-              <span className="text-[10px] text-emerald-500 font-mono font-semibold">200 OK</span>
+              <span className="text-[10px] text-emerald-500 font-mono font-semibold">
+                {t.settingsPage.securityCard.items.edgeGuard.status}
+              </span>
             </div>
             <p className="text-[11px] text-muted-foreground leading-relaxed">
-              Protección en el Edge para <code className="text-foreground">/board</code>, <code className="text-foreground">/workflows</code>, <code className="text-foreground">/analytics</code> y <code className="text-foreground">/settings</code>. Redirección automática con parámetro <code className="text-foreground">?redirect=</code>.
+              {t.settingsPage.securityCard.items.edgeGuard.desc}
             </p>
           </div>
 
@@ -111,12 +113,14 @@ export default function SettingsPage() {
             <div className="flex items-center justify-between">
               <span className="text-xs font-medium text-foreground flex items-center gap-1.5">
                 <Cookie className="h-3.5 w-3.5 text-primary" />
-                Sesión con Cookie HttpOnly
+                {t.settingsPage.securityCard.items.cookie.title}
               </span>
-              <span className="text-[10px] text-emerald-500 font-mono font-semibold">Protegido</span>
+              <span className="text-[10px] text-emerald-500 font-mono font-semibold">
+                {t.settingsPage.securityCard.items.cookie.status}
+              </span>
             </div>
             <p className="text-[11px] text-muted-foreground leading-relaxed">
-              Cookie <code className="text-foreground">nexus_session</code> configurada con flags <code className="text-foreground">HttpOnly</code>, <code className="text-foreground">SameSite=Lax</code> y <code className="text-foreground">Path=/</code>. Inmune a robo por inyección XSS.
+              {t.settingsPage.securityCard.items.cookie.desc}
             </p>
           </div>
 
@@ -124,12 +128,14 @@ export default function SettingsPage() {
             <div className="flex items-center justify-between">
               <span className="text-xs font-medium text-foreground flex items-center gap-1.5">
                 <ShieldCheck className="h-3.5 w-3.5 text-primary" />
-                Cabeceras HTTP de Seguridad
+                {t.settingsPage.securityCard.items.headers.title}
               </span>
-              <span className="text-[10px] text-emerald-500 font-mono font-semibold">CSP & HSTS</span>
+              <span className="text-[10px] text-emerald-500 font-mono font-semibold">
+                {t.settingsPage.securityCard.items.headers.status}
+              </span>
             </div>
             <p className="text-[11px] text-muted-foreground leading-relaxed">
-              Content Security Policy estricta, <code className="text-foreground">X-Frame-Options: DENY</code> contra Clickjacking, <code className="text-foreground">nosniff</code>, <code className="text-foreground">strict-origin</code> y HSTS preload.
+              {t.settingsPage.securityCard.items.headers.desc}
             </p>
           </div>
 
@@ -137,12 +143,14 @@ export default function SettingsPage() {
             <div className="flex items-center justify-between">
               <span className="text-xs font-medium text-foreground flex items-center gap-1.5">
                 <KeyRound className="h-3.5 w-3.5 text-primary" />
-                Esquemas Zod & Control RBAC
+                {t.settingsPage.securityCard.items.rbac.title}
               </span>
-              <span className="text-[10px] text-emerald-500 font-mono font-semibold">Runtime Guard</span>
+              <span className="text-[10px] text-emerald-500 font-mono font-semibold">
+                {t.settingsPage.securityCard.items.rbac.status}
+              </span>
             </div>
             <p className="text-[11px] text-muted-foreground leading-relaxed">
-              Sanitización de payloads antes del procesamiento. Rol activo verificado: <strong className="text-foreground uppercase">{user?.role || "GUEST"}</strong> ({user?.name || "Sin sesión"}).
+              {t.settingsPage.securityCard.items.rbac.desc} <strong className="text-foreground uppercase">{user?.role || "GUEST"}</strong> ({user?.name || t.settingsPage.securityCard.items.rbac.noSession}).
             </p>
           </div>
         </div>
@@ -152,19 +160,21 @@ export default function SettingsPage() {
       <div className="rounded-xl border border-border/50 bg-card/30 p-5 space-y-4">
         <div>
           <h2 className="text-sm font-semibold text-foreground">
-            Preferencias de Interfaz
+            {t.settingsPage.preferencesCard.title}
           </h2>
           <p className="text-xs text-muted-foreground mt-0.5">
-            Personaliza el tema visual y el idioma de la aplicación.
+            {t.settingsPage.preferencesCard.desc}
           </p>
         </div>
 
         <div className="divide-y divide-border/40 pt-1">
           <div className="py-3 flex items-center justify-between">
             <div>
-              <div className="text-xs font-medium text-foreground">Tema Visual</div>
+              <div className="text-xs font-medium text-foreground">
+                {t.settingsPage.preferencesCard.themeTitle}
+              </div>
               <div className="text-[11px] text-muted-foreground">
-                Alternar entre modo claro y oscuro con soporte SSR nativo en React 19.
+                {t.settingsPage.preferencesCard.themeDesc}
               </div>
             </div>
             <ThemeToggle />
@@ -172,9 +182,11 @@ export default function SettingsPage() {
 
           <div className="py-3 flex items-center justify-between">
             <div>
-              <div className="text-xs font-medium text-foreground">Idioma / Localization</div>
+              <div className="text-xs font-medium text-foreground">
+                {t.settingsPage.preferencesCard.langTitle}
+              </div>
               <div className="text-[11px] text-muted-foreground">
-                Seleccionar Español o Inglés con persistencia en localStorage.
+                {t.settingsPage.preferencesCard.langDesc}
               </div>
             </div>
             <LanguageToggle />
@@ -187,25 +199,25 @@ export default function SettingsPage() {
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-sm font-semibold text-foreground">
-              Espacio de Trabajo
+              {t.settingsPage.workspaceCard.title}
             </h2>
             <p className="text-xs text-muted-foreground mt-0.5">
-              Información de tu organización y credenciales.
+              {t.settingsPage.workspaceCard.desc}
             </p>
           </div>
           <Badge variant="success" className="text-xs">
-            Plan Enterprise
+            {t.settingsPage.workspaceCard.planBadge}
           </Badge>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 text-xs">
           <div className="p-3 rounded-lg border border-border/40 bg-card/40 space-y-1">
-            <span className="text-muted-foreground">Nombre del Workspace</span>
+            <span className="text-muted-foreground">{t.settingsPage.workspaceCard.nameLabel}</span>
             <div className="font-semibold text-foreground">{t.shell.workspace}</div>
           </div>
 
           <div className="p-3 rounded-lg border border-border/40 bg-card/40 space-y-1">
-            <span className="text-muted-foreground">Desarrollador Responsable</span>
+            <span className="text-muted-foreground">{t.settingsPage.workspaceCard.devLabel}</span>
             <div className="font-semibold text-foreground">{t.shell.user.name}</div>
           </div>
         </div>

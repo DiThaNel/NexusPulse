@@ -14,6 +14,8 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 
+import { useLanguage } from "@/components/language-provider";
+
 interface KanbanColumnProps {
   id: TaskStatus;
   title: string;
@@ -23,6 +25,7 @@ interface KanbanColumnProps {
 export function KanbanColumn({ id, title, tasks }: KanbanColumnProps) {
   const { canEdit } = useAuthStore();
   const { openCreateModal } = useTaskStore();
+  const { t } = useLanguage();
 
   const isEditable = canEdit();
 
@@ -61,7 +64,7 @@ export function KanbanColumn({ id, title, tasks }: KanbanColumnProps) {
             size="icon"
             onClick={() => openCreateModal(id)}
             className="h-6 w-6 text-muted-foreground hover:text-foreground hover:bg-muted/70"
-            title={`Añadir tarea a ${title}`}
+            title={`${t.kanban.addTaskTo} ${title}`}
           >
             <Plus className="h-3.5 w-3.5" />
           </Button>
@@ -80,7 +83,7 @@ export function KanbanColumn({ id, title, tasks }: KanbanColumnProps) {
         {tasks.length === 0 && (
           <div className="flex-1 flex items-center justify-center rounded-lg border border-dashed border-border/40 p-6 text-center">
             <span className="text-[11px] text-muted-foreground font-mono">
-              Sin tareas
+              {t.kanban.emptyColumn}
             </span>
           </div>
         )}

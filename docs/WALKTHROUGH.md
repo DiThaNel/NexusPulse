@@ -269,6 +269,35 @@ Implementar un centro de mando analítico y de telemetría de nivel senior en `/
 
 ---
 
+## Módulo Especial: Internacionalización Integral (i18n) y Traducción Dinámica de Tarjetas
+
+### Resumen del Requerimiento
+El usuario solicitó auditar minuciosamente las traducciones pendientes en la plataforma e implementar la traducción bilingüe completa incluso a nivel de contenido de tarjetas (Kanban Tasks y Workflows), respondiendo a la pregunta sobre si era muy complicado.
+
+### Implementación Arquitectónica
+Se demostró que la traducción dinámica de tarjetas **no es complicada**, sino altamente estructurada y escalable mediante un patrón de diccionario bilingüe (`card-translations.ts`):
+
+1. **Módulo de Traducciones de Tarjetas (`src/lib/translations/card-translations.ts`)**:
+   - Mapeo bilingüe determinista (ES / EN) para las tarjetas semilla del tablero Kanban (`NP-101` a `NP-107`) y workflows (`wf-1` a `wf-4`).
+   - Funciones helper de localización reactiva:
+     - `localizeTask(task, locale)`: traduce título, descripción y etiquetas de las tareas semilla según el idioma activo, preservando intactas las tareas creadas por el usuario.
+     - `localizeWorkflow(workflow, locale)`: traduce nombre, descripción, pasos del pipeline y marcas temporales relativas.
+     - `localizeTimeAgo(timeStr, locale)`: formatea marcas como *"Hace 4 minutos"* a *"4 minutes ago"* o *"Hace 1 día"* a *"1 day ago"*.
+
+2. **Auditoría & Cobertura Completa de Traducciones en Componentes**:
+   - **Kanban Board**: Título de tarjetas, etiquetas, placeholders de columnas vacías (`No tasks` / `Sin tareas`), tooltips de drag handle (`Drag to move` / `Arrastrar para mover`), botones de añadir tarea y modal de creación/edición.
+   - **Workflows**: Nombres de automatizaciones, descripciones, marcas temporales relativas, pasos de pipeline y consola de telemetría bilingüe en tiempo real.
+   - **Analytics**:
+     - *Priority Donut Chart*: Etiquetas de dona y leyenda traducidas dinámicamente (`Urgent`, `High`, `Medium`, `Low`).
+     - *Throughput Chart*: Eje temporal y tooltips traducidos (`Mon`, `Tue`, `Wk 1`, `Today (13 Sep)`, `Current`).
+     - *Workload Bar Chart*: Tooltips de barras apiladas traducidos (`completed`, `in progress`, `backlog`).
+     - *Live Telemetry Feed*: Botón `Clear` / `Limpiar`, tooltips y estado vacío del stream traducidos.
+     - *KPI Cards*: Métricas de corridas registradas (`recorded runs`).
+   - **Overview Page**: Tarjetas de acceso rápido conectadas a `t.overviewCards`.
+   - **Settings Page**: Toda la sección de auditoría de seguridad perimetral, flags HttpOnly, cabeceras HTTP defensivas y workspace profile 100% bilingüe.
+
+---
+
 ## Hoja de Ruta Actualizada para Próximas Fases
 
 * [x] **Fase 1: Arquitectura Base, Design System e i18n** *(Completado)*
@@ -278,9 +307,11 @@ Implementar un centro de mando analítico y de telemetría de nivel senior en `/
 * [x] **Fase 4: Gestión de Estado Asíncrono & Optimistic UI (TanStack Query v5 & Animaciones de Modales)** *(Completado)*
 * [x] **Fase 5: Motor de Workflows & Automatizaciones Operativas (Pipelines, Triggers de Eventos y Ejecución en Tiempo Real)** *(Completado)*
 * [x] **Fase 6: Métricas Operativas & Telemetría en Tiempo Real (Analytics Dashboard)** *(Completado)*
+* [x] **Módulo Especial: Internacionalización Integral (i18n) & Localización Dinámica de Tarjetas** *(Completado)*
 * [ ] **Fase 7: Suite de Testing Automatizado con Jest / React Testing Library & Vitest**
 * [ ] **Fase 8: Auditoría Final de Rendimiento, Optimización de Producción y Push Remoto a GitHub**
 * [ ] **Fase 9 (Hito Final): Versión Mobile App mediante Vía Híbrida / Empaquetado Nativo: Capacitor (Ionic)** *(Sincronización multiplataforma, feedback háptico en drag-and-drop, notificaciones push nativas y empaquetado para iOS/Android)*
+
 
 
 

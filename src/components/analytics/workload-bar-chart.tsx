@@ -83,21 +83,21 @@ export function WorkloadBarChart({ data }: WorkloadBarChartProps) {
                 {/* Completed (Emerald) */}
                 <div
                   style={{ width: `${completedPct}%` }}
-                  title={`${assignee.completed} completadas (${Math.round(completedPct)}%)`}
+                  title={`${assignee.completed} ${t.analytics.status.completed.toLowerCase()} (${Math.round(completedPct)}%)`}
                   className="h-full bg-emerald-500 transition-all duration-500 hover:opacity-90"
                 />
 
                 {/* In Progress (Blue) */}
                 <div
                   style={{ width: `${inProgressPct}%` }}
-                  title={`${assignee.inProgress} en progreso (${Math.round(inProgressPct)}%)`}
+                  title={`${assignee.inProgress} ${t.analytics.status.inProgress.toLowerCase()} (${Math.round(inProgressPct)}%)`}
                   className="h-full bg-blue-500 transition-all duration-500 hover:opacity-90"
                 />
 
                 {/* Backlog (Muted) */}
                 <div
                   style={{ width: `${backlogPct}%` }}
-                  title={`${assignee.backlog} en backlog (${Math.round(backlogPct)}%)`}
+                  title={`${assignee.backlog} ${t.analytics.status.backlog.toLowerCase()} (${Math.round(backlogPct)}%)`}
                   className="h-full bg-muted-foreground/30 transition-all duration-500 hover:opacity-90"
                 />
               </div>

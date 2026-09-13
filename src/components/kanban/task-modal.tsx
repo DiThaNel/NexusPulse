@@ -11,6 +11,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { X, AlertCircle } from "lucide-react";
 
+import { localizeTask } from "@/lib/translations/card-translations";
+
 export function TaskModal() {
   const {
     isTaskModalOpen,
@@ -22,7 +24,7 @@ export function TaskModal() {
 
   const queryClient = useQueryClient();
   const { mutate: createTaskOptimistic } = useCreateTaskMutation();
-  const { t } = useLanguage();
+  const { t, locale } = useLanguage();
 
   const [title, setTitle] = React.useState("");
   const [description, setDescription] = React.useState("");
@@ -41,15 +43,16 @@ export function TaskModal() {
   React.useEffect(() => {
     if (isTaskModalOpen) {
       if (editingTask) {
+        const localized = localizeTask(editingTask, locale);
         isEditingRef.current = true;
-        activeTaskIdRef.current = editingTask.id;
-        setTitle(editingTask.title);
-        setDescription(editingTask.description || "");
-        setStatus(editingTask.status);
-        setPriority(editingTask.priority);
-        setAssigneeId(editingTask.assignee?.id || DEMO_USERS[0].id);
-        setEstimateHours(editingTask.estimateHours ? String(editingTask.estimateHours) : "");
-        setTagsInput(editingTask.tags ? editingTask.tags.join(", ") : "");
+        activeTaskIdRef.current = localized.id;
+        setTitle(localized.title);
+        setDescription(localized.description || "");
+        setStatus(localized.status);
+        setPriority(localized.priority);
+        setAssigneeId(localized.assignee?.id || DEMO_USERS[0].id);
+        setEstimateHours(localized.estimateHours ? String(localized.estimateHours) : "");
+        setTagsInput(localized.tags ? localized.tags.join(", ") : "");
       } else {
         isEditingRef.current = false;
         activeTaskIdRef.current = null;

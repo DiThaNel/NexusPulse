@@ -104,7 +104,10 @@ export const en: typeof es = {
       readOnlyTooltip: "Read only mode (Viewer)",
       deleteTask: "Delete task",
       editTask: "Edit task",
+      dragToMove: "Drag to move",
     },
+    emptyColumn: "No tasks",
+    addTaskTo: "Add task to",
     modal: {
       createTitle: "Create New Task",
       editTitle: "Edit Task",
@@ -126,11 +129,16 @@ export const en: typeof es = {
       },
     },
     readOnlyBanner: "You are browsing as Viewer (Read Only). Task dragging, creation, and editing is disabled.",
+    toolbarTooltips: {
+      simulateError: "Simulate server network failure when moving cards to observe Optimistic Rollback",
+    },
   },
   workflows: {
     title: "Automations & Workflows",
     subtitle: "Real-time event orchestration, multi-stage pipelines, and telemetry execution.",
     newWorkflowBtn: "New Workflow",
+    refreshServerState: "Refresh server state",
+    neverRun: "Never",
     searchPlaceholder: "Search by name, trigger, or description...",
     filters: {
       all: "All Statuses",
@@ -205,6 +213,7 @@ export const en: typeof es = {
       cycleTimeDetail: "From 'Todo' to 'Done'",
       workflowSuccess: "Workflow Success Rate",
       workflowSuccessDetail: "200 OK execution rate",
+      workflowRunsRecorded: "recorded runs",
       slaCompliance: "SLA Compliance Rate",
       slaComplianceDetail: "On-target delivery rate",
     },
@@ -222,6 +231,83 @@ export const en: typeof es = {
       completed: "Completed",
       inProgress: "In Progress",
       backlog: "Backlog / Todo",
+    },
+    telemetry: {
+      clearBtn: "Clear",
+      clearTooltip: "Clear telemetry event stream",
+      emptyTitle: "Clean telemetry stream",
+      emptyDesc: "New task drag, creation, or workflow execution events will stream here in real time.",
+    },
+  },
+  overviewCards: {
+    kanban: {
+      badge: "Kanban Board",
+      activeTasks: "Active Tasks",
+      desc: "Drag & drop with @dnd-kit, optimistic mutations, and runtime Zod validation.",
+    },
+    workflows: {
+      badge: "Workflows",
+      livePipelines: "Live Pipelines",
+      desc: "Webhook/cron automations and runner with live log console.",
+    },
+    analytics: {
+      badge: "Live Telemetry",
+      coreHealth: "Core Health",
+      telemetryActive: "Active Telemetry",
+      desc: "Zero-hydration SVG charts with real-time reactive synchronization.",
+    },
+    commandPalette: {
+      badge: "Command Palette",
+      title: "Quick Search",
+      desc: "Navigate to any view or trigger quick actions via keyboard.",
+    },
+  },
+  settingsPage: {
+    subtitle: "User preferences, security audit, and technical configurations.",
+    securityCard: {
+      title: "Security Layer & Edge Middleware",
+      badge: "Active",
+      desc: "Defense-in-depth architecture implemented in Next.js App Router.",
+      auditBtn: "Audit Security",
+      verifying: "Verifying...",
+      items: {
+        edgeGuard: {
+          title: "Edge Middleware Route Guard",
+          status: "200 OK",
+          desc: "Edge protection for /board, /workflows, /analytics, and /settings. Automatic redirection with ?redirect= parameter.",
+        },
+        cookie: {
+          title: "HttpOnly Cookie Session",
+          status: "Protected",
+          desc: "nexus_session cookie configured with HttpOnly, SameSite=Lax, and Path=/ flags. Immune to XSS injection theft.",
+        },
+        headers: {
+          title: "Defensive HTTP Security Headers",
+          status: "CSP & HSTS",
+          desc: "Strict Content Security Policy, X-Frame-Options: DENY against Clickjacking, nosniff, strict-origin, and HSTS preload.",
+        },
+        rbac: {
+          title: "Zod Schemas & RBAC Enforcement",
+          status: "Runtime Guard",
+          desc: "Strict payload sanitization prior to processing. Active verified role:",
+          noSession: "No session",
+        },
+      },
+    },
+    preferencesCard: {
+      title: "Interface Preferences",
+      desc: "Customize visual theme and application language.",
+      themeTitle: "Visual Theme",
+      themeDesc: "Toggle between light and dark mode with React 19 native SSR support.",
+      langTitle: "Language / Localization",
+      langDesc: "Select English or Spanish with localStorage persistence.",
+    },
+    workspaceCard: {
+      title: "Workspace",
+      desc: "Organization information and verified credentials.",
+      planBadge: "Enterprise Plan",
+      nameLabel: "Workspace Name",
+      devLabel: "Lead Engineer",
     },
   },
   hero: {

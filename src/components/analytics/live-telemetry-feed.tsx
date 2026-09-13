@@ -40,10 +40,10 @@ export function LiveTelemetryFeed({ logs }: LiveTelemetryFeedProps) {
               onClick={() => clearTelemetry()}
               disabled={isClearing}
               className="h-6 px-2 text-[10px] font-mono text-muted-foreground hover:text-destructive hover:bg-destructive/10 gap-1 transition-colors"
-              title="Limpiar stream de eventos"
+              title={t.analytics.telemetry.clearTooltip}
             >
               <Trash2 className="h-3 w-3" />
-              <span className="hidden sm:inline">Limpiar</span>
+              <span className="hidden sm:inline">{t.analytics.telemetry.clearBtn}</span>
             </Button>
           )}
 
@@ -59,10 +59,10 @@ export function LiveTelemetryFeed({ logs }: LiveTelemetryFeedProps) {
         <div className="py-8 text-center space-y-2 border border-dashed border-border/40 rounded-lg bg-card/20">
           <Terminal className="h-6 w-6 text-muted-foreground/60 mx-auto" />
           <div className="text-xs font-medium text-foreground">
-            Stream de telemetría limpio
+            {t.analytics.telemetry.emptyTitle}
           </div>
           <p className="text-[11px] text-muted-foreground max-w-xs mx-auto">
-            Los nuevos eventos de arrastre de tareas, creación o ejecución de flujos aparecerán aquí en tiempo real.
+            {t.analytics.telemetry.emptyDesc}
           </p>
         </div>
       ) : (

@@ -89,7 +89,7 @@ export function PriorityDonutChart({ data }: PriorityBreakdownData[] | any) {
               {activeItem ? `${activeItem.percentage}%` : totalCount}
             </span>
             <span className="text-[10px] text-muted-foreground uppercase tracking-wider">
-              {activeItem ? activeItem.label : "Total"}
+              {activeItem ? (t.kanban.priorities[activeItem.priority as keyof typeof t.kanban.priorities] || activeItem.label) : "Total"}
             </span>
           </div>
         </div>
@@ -98,6 +98,7 @@ export function PriorityDonutChart({ data }: PriorityBreakdownData[] | any) {
         <div className="w-full sm:w-auto space-y-2.5">
           {items.map((slice) => {
             const isHovered = hoveredPriority === slice.priority;
+            const localizedLabel = t.kanban.priorities[slice.priority as keyof typeof t.kanban.priorities] || slice.label;
 
             return (
               <div
@@ -113,7 +114,7 @@ export function PriorityDonutChart({ data }: PriorityBreakdownData[] | any) {
                     className="h-2.5 w-2.5 rounded-full shrink-0"
                     style={{ backgroundColor: slice.color }}
                   />
-                  <span className="font-medium text-foreground">{slice.label}</span>
+                  <span className="font-medium text-foreground">{localizedLabel}</span>
                 </div>
 
                 <div className="flex items-center gap-3 font-mono text-[11px] text-muted-foreground">

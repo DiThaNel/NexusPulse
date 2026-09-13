@@ -23,6 +23,8 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
+import { localizeWorkflow } from "@/lib/translations/card-translations";
+
 interface WorkflowPipelineDrawerProps {
   workflow: Workflow | null;
   isOpen: boolean;
@@ -30,13 +32,18 @@ interface WorkflowPipelineDrawerProps {
 }
 
 export function WorkflowPipelineDrawer({
-  workflow,
+  workflow: rawWorkflow,
   isOpen,
   onClose,
 }: WorkflowPipelineDrawerProps) {
-  const { t } = useLanguage();
+  const { t, locale } = useLanguage();
   const { canEdit } = useAuthStore();
   const isEditable = canEdit();
+
+  const workflow = React.useMemo(
+    () => (rawWorkflow ? localizeWorkflow(rawWorkflow, locale) : null),
+    [rawWorkflow, locale]
+  );
 
   const { mutateAsync: runWorkflow, isPending: isMutationPending } =
     useRunWorkflowMutation();
@@ -81,13 +88,17 @@ export function WorkflowPipelineDrawer({
       second: "2-digit",
     });
 
+    const isEn = locale === "en";
+
     // Step 1: Trigger
     setLogs([
       {
         id: `live-${Date.now()}-1`,
         timestamp: timeStr,
         level: "info",
-        message: `[DISPARADOR] Verificando fuente: ${workflow.trigger.toUpperCase()} (${workflow.triggerDetail}).`,
+        message: isEn
+          ? `[TRIGGER] Verifying inbound source: ${workflow.trigger.toUpperCase()} (${workflow.triggerDetail}).`
+          : `[DISPARADOR] Verificando fuente: ${workflow.trigger.toUpperCase()} (${workflow.triggerDetail}).`,
       },
     ]);
 
@@ -101,7 +112,9 @@ export function WorkflowPipelineDrawer({
         id: `live-${Date.now()}-2`,
         timestamp: timeStr,
         level: "info",
-        message: `[EVALUACIÓN] Criterios de regla y esquema de datos validados correctamente: OK.`,
+        message: isEn
+          ? `[EVALUATION] Rule criteria and data schema validated successfully: OK.`
+          : `[EVALUACIÓN] Criterios de regla y esquema de datos validados correctamente: OK.`,
       },
     ]);
 
@@ -115,7 +128,9 @@ export function WorkflowPipelineDrawer({
         id: `live-${Date.now()}-3`,
         timestamp: timeStr,
         level: "info",
-        message: `[ACCIÓN] Despachando llamada a: ${workflow.steps[2]?.name || "Acción configurada"}.`,
+        message: isEn
+          ? `[ACTION] Dispatching payload to: ${workflow.steps[2]?.name || "Configured Action"}.`
+          : `[ACCIÓN] Despachando llamada a: ${workflow.steps[2]?.name || "Acción configurada"}.`,
       },
     ]);
 
@@ -129,7 +144,9 @@ export function WorkflowPipelineDrawer({
           id: `live-${Date.now()}-4`,
           timestamp: timeStr,
           level: "success",
-          message: `[ÉXITO] Pipeline '${workflow.name}' ejecutado con éxito en 320ms. Salida: 200 OK.`,
+          message: isEn
+            ? `[SUCCESS] Pipeline '${workflow.name}' executed successfully in 320ms. Status: 200 OK.`
+            : `[ÉXITO] Pipeline '${workflow.name}' ejecutado con éxito en 320ms. Salida: 200 OK.`,
         },
       ]);
     } catch {
@@ -140,7 +157,9 @@ export function WorkflowPipelineDrawer({
           id: `live-${Date.now()}-err`,
           timestamp: timeStr,
           level: "error",
-          message: `[ERROR] Falló la persistencia de ejecución en el servidor.`,
+          message: isEn
+            ? `[ERROR] Failed to persist pipeline execution on server.`
+            : `[ERROR] Falló la persistencia de ejecución en el servidor.`,
         },
       ]);
     } finally {

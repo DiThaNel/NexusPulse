@@ -23,15 +23,19 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
+import { localizeWorkflow, localizeTimeAgo } from "@/lib/translations/card-translations";
+
 interface WorkflowCardProps {
   workflow: Workflow;
   onOpenPipeline: (workflow: Workflow) => void;
 }
 
-export function WorkflowCard({ workflow, onOpenPipeline }: WorkflowCardProps) {
-  const { t } = useLanguage();
+export function WorkflowCard({ workflow: rawWorkflow, onOpenPipeline }: WorkflowCardProps) {
+  const { t, locale } = useLanguage();
   const { canEdit } = useAuthStore();
   const isEditable = canEdit();
+
+  const workflow = React.useMemo(() => localizeWorkflow(rawWorkflow, locale), [rawWorkflow, locale]);
 
   const { mutate: toggleStatus, isPending: isToggling } =
     useToggleWorkflowStatusMutation();
@@ -120,7 +124,7 @@ export function WorkflowCard({ workflow, onOpenPipeline }: WorkflowCardProps) {
 
             <div className="text-left sm:text-right hidden sm:block">
               <div className="font-mono text-[11px] text-foreground">
-                {workflow.lastRunAt || "Nunca"}
+                {localizeTimeAgo(workflow.lastRunAt, locale)}
               </div>
               <div className="text-[10px] uppercase tracking-wider text-muted-foreground/80">
                 {t.workflows.card.lastRun}

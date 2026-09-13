@@ -11,7 +11,29 @@ interface ThroughputChartProps {
 }
 
 export function ThroughputChart({ data }: ThroughputChartProps) {
-  const { t } = useLanguage();
+  const { t, locale } = useLanguage();
+  const isEn = locale === "en";
+
+  const formatAxisDate = (d: string): string => {
+    if (!isEn) return d;
+    const map: Record<string, string> = {
+      "Lun": "Mon", "Mar": "Tue", "Mié": "Wed", "Jue": "Thu", "Vie": "Fri", "Sáb": "Sat", "Dom": "Sun",
+      "Sem 1": "Wk 1", "Sem 3": "Wk 3", "Sem 5": "Wk 5", "Sem 7": "Wk 7", "Sem 9": "Wk 9", "Sem 11": "Wk 11",
+      "15 Ago": "15 Aug", "22 Ago": "22 Aug", "29 Ago": "29 Aug", "05 Sep": "05 Sep", "10 Sep": "10 Sep", "12 Sep": "12 Sep",
+    };
+    return map[d] || d;
+  };
+
+  const formatTooltipLabel = (label: string): string => {
+    if (!isEn) return label;
+    return label
+      .replace("Hoy", "Today")
+      .replace("Esta semana", "This week")
+      .replace("Sem 6 (Actual)", "Wk 6 (Current)")
+      .replace("Sem", "Wk")
+      .replace("Ago", "Aug");
+  };
+
   const [hoveredIndex, setHoveredIndex] = React.useState<number | null>(null);
 
   if (!data || data.length === 0) return null;
@@ -210,7 +232,7 @@ export function ThroughputChart({ data }: ThroughputChartProps) {
                       : "fill-muted-foreground text-[10px] font-mono"
                   }
                 >
-                  {point.date}
+                  {formatAxisDate(point.date)}
                 </text>
               </g>
             );
@@ -234,7 +256,7 @@ export function ThroughputChart({ data }: ThroughputChartProps) {
               className="pointer-events-none absolute z-20 rounded-lg border border-border/80 bg-card p-2.5 shadow-xl text-xs space-y-1 min-w-[130px]"
             >
               <div className="font-mono text-[11px] font-semibold text-foreground border-b border-border/40 pb-1">
-                {hoveredPoint.label} ({hoveredPoint.date})
+                {formatTooltipLabel(hoveredPoint.label)} ({formatAxisDate(hoveredPoint.date)})
               </div>
               <div className="flex items-center justify-between gap-3 text-[11px]">
                 <span className="text-muted-foreground">{t.analytics.status.completed}:</span>

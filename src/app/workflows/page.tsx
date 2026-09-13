@@ -105,7 +105,7 @@ export default function WorkflowsPage() {
             onClick={() => refetch()}
             disabled={isFetching}
             className="h-8 w-8 p-0 border-border/60"
-            title="Refrescar estado del servidor"
+            title={t.workflows.refreshServerState}
           >
             <RefreshCw
               className={cn("h-3.5 w-3.5 text-muted-foreground", isFetching && "animate-spin")}
