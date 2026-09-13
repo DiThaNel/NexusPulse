@@ -214,105 +214,57 @@ export default function HomePage() {
         </div>
       </motion.section>
 
-      {/* Foundation & Roadmap Split Section */}
+      {/* Implemented Foundations & Architecture (Full-Width Expanded Showcase) */}
       <motion.section
         variants={itemVariants}
         id="architecture"
-        className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2"
+        className="rounded-2xl border border-border/50 bg-card/30 p-5 sm:p-7 space-y-6"
       >
-        {/* Foundation Highlights */}
-        <div className="p-5 rounded-xl border border-border/50 bg-card/30 space-y-4">
-          <div>
-            <h2 className="text-sm font-semibold tracking-tight text-foreground flex items-center gap-2">
-              <ShieldCheck className="h-4 w-4 text-emerald-500" />
-              <span>{t.foundations.title}</span>
-            </h2>
-            <p className="text-xs text-muted-foreground mt-0.5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border/30 pb-4">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <ShieldCheck className="h-5 w-5 text-emerald-500" />
+              <h2 className="text-base sm:text-lg font-semibold tracking-tight text-foreground">
+                {t.foundations.title}
+              </h2>
+            </div>
+            <p className="text-xs sm:text-sm text-muted-foreground">
               {t.foundations.subtitle}
             </p>
           </div>
 
-          <ul className="space-y-3 text-xs text-muted-foreground">
-            {t.foundations.items.map((item) => (
-              <li key={item.title} className="flex items-start gap-2.5">
-                <Check className="h-3.5 w-3.5 text-emerald-500 mt-0.5 shrink-0" />
-                <div>
-                  <span className="text-foreground font-medium">
-                    {item.title}:
-                  </span>{" "}
-                  {item.desc}
-                </div>
-              </li>
-            ))}
-          </ul>
+          <Badge variant="outline" className="text-xs font-mono py-0.5 px-2.5 self-start sm:self-auto">
+            8 Core Pillars • 100% Production Ready
+          </Badge>
         </div>
 
-        {/* Development Roadmap */}
-        <div className="p-5 rounded-xl border border-border/50 bg-card/30 space-y-4">
-          <div>
-            <h2 className="text-sm font-semibold tracking-tight text-foreground flex items-center gap-2">
-              <Sparkles className="h-4 w-4 text-primary" />
-              <span>{t.roadmap.title}</span>
-            </h2>
-            <p className="text-xs text-muted-foreground mt-0.5">
-              {t.roadmap.subtitle}
-            </p>
-          </div>
-
-          <ol className="space-y-3 text-xs">
-            {t.roadmap.steps.map((step) => {
-              const isCompleted = step.status === "completed";
-              const isActive = step.status === "active";
-
-              return (
-                <li
-                  key={step.number}
-                  className={`flex items-start gap-2.5 ${
-                    !isCompleted && !isActive ? "opacity-60" : ""
-                  }`}
-                >
-                  {isCompleted ? (
-                    <span className="h-4 w-4 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-[10px] font-medium shrink-0 mt-0.5">
-                      ✓
-                    </span>
-                  ) : isActive ? (
-                    <span className="h-4 w-4 rounded-full border border-primary/60 text-primary flex items-center justify-center text-[10px] font-semibold shrink-0 mt-0.5">
-                      {step.number}
-                    </span>
-                  ) : (
-                    <span className="h-4 w-4 rounded-full border border-border text-muted-foreground flex items-center justify-center text-[10px] shrink-0 mt-0.5">
-                      {step.number}
+        {/* 4-column / 2-column Architecture Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {t.foundations.items.map((item: any) => (
+            <div
+              key={item.title}
+              className="p-4 rounded-xl border border-border/40 bg-card/40 hover:bg-card hover:border-border/80 transition-all duration-200 flex flex-col justify-between space-y-3 group"
+            >
+              <div className="space-y-2">
+                <div className="flex items-center justify-between gap-2">
+                  <div className="h-7 w-7 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-500">
+                    <Check className="h-4 w-4" />
+                  </div>
+                  {item.tag && (
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-muted/60 text-muted-foreground border border-border/40">
+                      {item.tag}
                     </span>
                   )}
-
-                  <div>
-                    <div className="text-foreground font-medium flex items-center gap-2">
-                      {step.title}
-                      {isCompleted && (
-                        <Badge
-                          variant="success"
-                          className="text-[9px] py-0 px-1.5"
-                        >
-                          {t.roadmap.readyBadge}
-                        </Badge>
-                      )}
-                      {isActive && (
-                        <Badge
-                          variant="outline"
-                          className="text-[9px] py-0 px-1.5"
-                        >
-                          {t.roadmap.nextBadge}
-                        </Badge>
-                      )}
-                    </div>
-                    <p className="text-[11px] text-muted-foreground mt-0.5">
-                      {step.desc}
-                    </p>
-                  </div>
-                </li>
-              );
-            })}
-          </ol>
+                </div>
+                <h3 className="text-xs sm:text-sm font-semibold text-foreground group-hover:text-primary transition-colors leading-snug">
+                  {item.title}
+                </h3>
+              </div>
+              <p className="text-[11px] sm:text-xs text-muted-foreground leading-relaxed">
+                {item.desc}
+              </p>
+            </div>
+          ))}
         </div>
       </motion.section>
     </motion.div>

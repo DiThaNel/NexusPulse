@@ -344,31 +344,47 @@ export const es = {
   },
   foundations: {
     title: "Fundamentos & Arquitectura Implementada",
-    subtitle: "Módulos de ingeniería de nivel senior integrados en la plataforma.",
+    subtitle: "Módulos de ingeniería de nivel senior integrados y verificados en producción local.",
     items: [
       {
         title: "Design System Semántico HSL",
-        desc: "Tokens de Tailwind CSS v4 con conmutación dinámica Dark/Light sin flash de hidratación.",
+        tag: "Tailwind v4",
+        desc: "Tokens HSL semánticos, conmutación fluida Dark/Light sin parpadeo de hidratación y micro-interacciones pulidas.",
       },
       {
-        title: "Gestión de Estado Híbrida",
-        desc: "Zustand para estado de UI del cliente y TanStack Query v5 para Server State con rollback automático.",
+        title: "Gestión de Estado Asíncrono & Optimistic UI",
+        tag: "TanStack Query v5",
+        desc: "Mutaciones optimistas con latencia percibida de 0ms, invalidación inteligente de queries y rollback automático ante caídas de red.",
       },
       {
-        title: "Kanban Accesible con @dnd-kit",
-        desc: "Drag & drop con sensores de activación, ordenamiento por columnas y validación Zod en runtime.",
+        title: "Tablero Kanban Interactivo & Drag-and-Drop",
+        tag: "@dnd-kit + Zod",
+        desc: "Sensores de puntero accesibles, animaciones elásticas por columna y validación de esquemas de datos estricta en runtime.",
       },
       {
-        title: "Motor de Workflows con Telemetría",
-        desc: "Pipelines visuales de 3 etapas con simulación secuencial y consola de logs en vivo.",
+        title: "Motor de Workflows Reactivo & Triggers In-App",
+        tag: "Automations Engine",
+        desc: "Pipelines visuales de 3 etapas, simulación en vivo y disparadores automáticos de eventos con alertas en la propia aplicación.",
       },
       {
-        title: "Visualización SVG Zero-Hydration",
-        desc: "Curvas Bezier cúbicas y anillos trigonométricos con tooltips elásticos en Framer Motion.",
+        title: "Métricas SVG Zero-Hydration & Telemetría",
+        tag: "Real-time SVG",
+        desc: "Curvas Bezier de rendimiento, anillos de distribución trigonométricos y streaming de eventos de telemetría sin librerías pesadas.",
       },
       {
         title: "Seguridad Perimetral & Multi-Perfil RBAC",
-        desc: "Edge Middleware, perfiles (Admin, PM, Viewer) y cabeceras defensivas HTTP (CSP, HSTS).",
+        tag: "Edge Middleware",
+        desc: "Cookies HttpOnly blindadas contra XSS, sesiones verificadas en el Edge y control de acceso estricto (Admin, PM, Viewer).",
+      },
+      {
+        title: "Internacionalización Integral (i18n)",
+        tag: "Bilingual Engine",
+        desc: "Soporte bilingüe completo (ES/EN) con localización dinámica en tiempo real para tarjetas Kanban, workflows y telemetría.",
+      },
+      {
+        title: "Testing Automatizado Empresarial",
+        tag: "52 Tests • 100% Pass",
+        desc: "Suite de pruebas unitarias y de integración de alto rendimiento con Vitest y React Testing Library sobre schemas, estado y UI.",
       },
     ],
   },

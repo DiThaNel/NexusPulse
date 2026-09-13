@@ -23,7 +23,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-import { localizeWorkflow } from "@/lib/translations/card-translations";
+import { localizeWorkflow, localizeWorkflowRunLog } from "@/lib/translations/card-translations";
 
 interface WorkflowPipelineDrawerProps {
   workflow: Workflow | null;
@@ -373,30 +373,33 @@ export function WorkflowPipelineDrawer({
                       {t.workflows.pipeline.noLogs}
                     </div>
                   ) : (
-                    logs.map((log) => (
-                      <div
-                        key={log.id}
-                        className="flex items-start gap-2.5 animate-in fade-in-0 duration-150"
-                      >
-                        <span className="text-neutral-500 shrink-0 text-[11px]">
-                          [{log.timestamp}]
-                        </span>
-                        <span
-                          className={cn(
-                            "font-bold text-[10px] uppercase px-1 rounded shrink-0",
-                            log.level === "success" && "bg-emerald-500/20 text-emerald-400",
-                            log.level === "info" && "bg-blue-500/20 text-blue-400",
-                            log.level === "warn" && "bg-amber-500/20 text-amber-400",
-                            log.level === "error" && "bg-red-500/20 text-red-400"
-                          )}
+                    logs.map((rawLog) => {
+                      const log = localizeWorkflowRunLog(rawLog, locale);
+                      return (
+                        <div
+                          key={log.id}
+                          className="flex items-start gap-2.5 animate-in fade-in-0 duration-150"
                         >
-                          {log.level}
-                        </span>
-                        <span className="text-neutral-300 leading-relaxed text-[11px]">
-                          {log.message}
-                        </span>
-                      </div>
-                    ))
+                          <span className="text-neutral-500 shrink-0 text-[11px]">
+                            [{log.timestamp}]
+                          </span>
+                          <span
+                            className={cn(
+                              "font-bold text-[10px] uppercase px-1 rounded shrink-0",
+                              log.level === "success" && "bg-emerald-500/20 text-emerald-400",
+                              log.level === "info" && "bg-blue-500/20 text-blue-400",
+                              log.level === "warn" && "bg-amber-500/20 text-amber-400",
+                              log.level === "error" && "bg-red-500/20 text-red-400"
+                            )}
+                          >
+                            {log.level}
+                          </span>
+                          <span className="text-neutral-300 leading-relaxed text-[11px]">
+                            {log.message}
+                          </span>
+                        </div>
+                      );
+                    })
                   )}
                 </div>
               </div>

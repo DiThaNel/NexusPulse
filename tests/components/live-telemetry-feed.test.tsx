@@ -27,19 +27,28 @@ describe("LiveTelemetryFeed Component", () => {
     },
   ];
 
-  it("should render live telemetry logs with actions, actors, and latency", () => {
+  it("should render live telemetry logs with localized actions, actors, and latency in Spanish", () => {
     renderWithProviders(<LiveTelemetryFeed logs={sampleLogs} />, { locale: "es" });
 
-    expect(screen.getByText("TASK_STATUS_CHANGED")).toBeInTheDocument();
+    expect(screen.getByText("CAMBIO DE ESTADO")).toBeInTheDocument();
     expect(screen.getByText("Gabriel Gonçalves")).toBeInTheDocument();
     expect(screen.getByText("NP-101")).toBeInTheDocument();
-    expect(screen.getByText("14ms")).toBeInTheDocument();
+    expect(screen.getByText(/14\s*ms/)).toBeInTheDocument();
     expect(screen.getByText("200 OK")).toBeInTheDocument();
 
-    expect(screen.getByText("WORKFLOW_EXECUTED")).toBeInTheDocument();
+    expect(screen.getByText("WORKFLOW EJECUTADO")).toBeInTheDocument();
     expect(screen.getByText("Elena Rostova")).toBeInTheDocument();
-    expect(screen.getByText("38ms")).toBeInTheDocument();
+    expect(screen.getByText(/38\s*ms/)).toBeInTheDocument();
     expect(screen.getByText("201 Created")).toBeInTheDocument();
+    expect(screen.getByText("TRANSMISIÓN EN VIVO")).toBeInTheDocument();
+  });
+
+  it("should localize actions and badge into English when locale is en", () => {
+    renderWithProviders(<LiveTelemetryFeed logs={sampleLogs} />, { locale: "en" });
+
+    expect(screen.getByText("TASK STATUS CHANGED")).toBeInTheDocument();
+    expect(screen.getByText("WORKFLOW EXECUTED")).toBeInTheDocument();
+    expect(screen.getByText("LIVE STREAM")).toBeInTheDocument();
   });
 
   it("should render clean terminal empty state when logs are empty", () => {
