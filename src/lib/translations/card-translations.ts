@@ -316,10 +316,13 @@ export function localizeTimeAgo(timeStr: string | undefined, locale: "es" | "en"
   if (!timeStr) return locale === "en" ? "Never" : "Nunca";
   if (locale === "es") return timeStr;
 
+  if (/^Hace\s+1\s+día/i.test(timeStr)) return "1 day ago";
+  if (/^Hace\s+1\s+hora/i.test(timeStr)) return "1 hour ago";
+  if (/^Hace\s+1\s+minuto/i.test(timeStr)) return "1 minute ago";
+
   return timeStr
-    .replace(/^Hace\s+(\d+)\s+minutos?/, "$1 minutes ago")
-    .replace(/^Hace\s+(\d+)\s+horas?/, "$1 hours ago")
-    .replace(/^Hace\s+(\d+)\s+días?/, "$1 days ago")
-    .replace(/^Hace\s+1\s+día/, "1 day ago")
-    .replace(/^Nunca$/, "Never");
+    .replace(/^Hace\s+(\d+)\s+minutos?/i, "$1 minutes ago")
+    .replace(/^Hace\s+(\d+)\s+horas?/i, "$1 hours ago")
+    .replace(/^Hace\s+(\d+)\s+días?/i, "$1 days ago")
+    .replace(/^Nunca$/i, "Never");
 }

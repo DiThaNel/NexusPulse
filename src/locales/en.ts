@@ -420,13 +420,13 @@ export const en: typeof es = {
         number: "7",
         title: "Phase 7: Automated Testing Suite (Vitest & RTL)",
         desc: "Unit and integration test suites covering components, custom hooks, and optimistic mutations.",
-        status: "active",
+        status: "completed",
       },
       {
         number: "8",
         title: "Phase 8: Performance Audit & Production Optimization",
         desc: "Lighthouse 100%, bundle analyzer, asset optimization, and preparation for remote push.",
-        status: "upcoming",
+        status: "active",
       },
       {
         number: "9",

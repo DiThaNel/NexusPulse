@@ -418,13 +418,13 @@ export const es = {
         number: "7",
         title: "Fase 7: Suite de Testing Automatizado (Vitest & RTL)",
         desc: "Pruebas unitarias y de integración sobre componentes, custom hooks y mutaciones optimistas.",
-        status: "active",
+        status: "completed",
       },
       {
         number: "8",
         title: "Fase 8: Auditoría de Rendimiento & Optimización de Producción",
         desc: "Lighthouse 100%, bundle analyzer, optimización de assets y preparación para push remoto.",
-        status: "upcoming",
+        status: "active",
       },
       {
         number: "9",

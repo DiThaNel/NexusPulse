@@ -298,6 +298,49 @@ Se demostró que la traducción dinámica de tarjetas **no es complicada**, sino
 
 ---
 
+## Fase 7: Suite de Testing Automatizado con Vitest & React Testing Library
+
+### 1. Arquitectura y Stack de Pruebas
+Se implementó un entorno de pruebas ultra rápido y moderno ejecutado con **Vitest v5**, **React Testing Library v16**, **jsdom** y **@testing-library/jest-dom v7**:
+- **Configuración Nativa ESM (`vitest.config.mts`)**: Resolución de alias `@/*` sincronizada con `tsconfig.json` mediante `import.meta.dirname` (sin advertencias de Vite).
+- **Entorno Global de Mocks (`tests/setup.ts`)**: Mocks completos para APIs del navegador no soportadas nativamente por jsdom (`ResizeObserver`, `IntersectionObserver`, `window.matchMedia`) y navegación de Next.js (`useRouter`, `usePathname`).
+- **Utilidad de Renderizado Bilingüe (`tests/test-utils.tsx`)**: Helper `renderWithProviders(ui, { locale, queryClient })` que aísla cada prueba en un `QueryClient` independiente y permite verificar componentes tanto en español (`"es"`) como en inglés (`"en"`).
+
+---
+
+### 2. Cobertura de las 14 Suites de Prueba (46 Tests - 100% Passing)
+
+| # | Archivo de Prueba | Capa / Módulo | N° Tests | Aspectos Clave Validados |
+|---|---|---|:---:|---|
+| 1 | `tests/validations/task.test.ts` | Zod Schemas | 6 | Validación estricta de título (min 3, max 100), descripción (max 500), prioridades (`baja`, `media`, `alta`, `urgente`), estados (`backlog`, `todo`, `in-progress`, `done`) y sanitización de etiquetas (`tags`). |
+| 2 | `tests/validations/workflow.test.ts` | Zod Schemas | 4 | Validación de triggers de eventos (`task:status_changed`, `task:created`, `task:priority_updated`), nombres, longitudes y estado inicial (`active`). |
+| 3 | `tests/translations/card-translations.test.ts` | i18n & Cards | 6 | Traducción dinámica de tareas semilla en ES/EN, preservación intacta de tareas creadas por el usuario y formato bilingüe de tiempos relativos (`hace X min` vs `X min ago`). |
+| 4 | `tests/stores/task-store.test.ts` | Zustand Stores | 6 | Inicialización con tareas semilla predeterminadas, acciones `addTask`, `updateTask`, `moveTask`, `deleteTask` y aplicación de filtros de búsqueda, prioridad y asignado. |
+| 5 | `tests/stores/auth-store.test.ts` | Zustand / RBAC | 5 | Permisos de edición para Administrador y Project Manager, bloqueo estricto de solo lectura para Viewer (`canEdit: false`), cambio dinámico de perfiles y logout. |
+| 6 | `tests/components/kanban-card.test.tsx` | React UI / RTL | 3 | Renderizado bilingüe de título, descripción y badges de prioridad; bloqueo y ocultación del botón de eliminación cuando el usuario activo es Viewer. |
+| 7 | `tests/components/workflow-card.test.tsx` | React UI / RTL | 2 | Visualización de estadísticas de corrida, triggers, estado activo/pausado y disparo del pipeline al hacer clic en ejecutar. |
+| 8 | `tests/components/kpi-metric-card.test.tsx` | React UI / RTL | 2 | Renderizado de valores numéricos, tendencias porcentuales (`+14.2%`, `-2.4%`), y lógica de inversión de color para métricas de tiempo de ciclo (`isInverse`). |
+| 9 | `tests/components/live-telemetry-feed.test.tsx` | React UI / RTL | 2 | Flujo dinámico de eventos de telemetría en tiempo real y estado vacío traducido cuando no hay actividad. |
+| 10 | `tests/components/priority-donut-chart.test.tsx` | SVG Charts | 2 | Traducción de etiquetas en leyenda y slices de dona según el locale activo (`Urgente` vs `Urgent`, `Baja` vs `Low`). |
+| 11 | `tests/components/workload-bar-chart.test.tsx` | SVG Charts | 1 | Barras apiladas por miembro de equipo (`Elena Rostova`, `Marcus Vance`, etc.) y desglose de tareas. |
+| 12 | `tests/components/throughput-chart.test.tsx` | SVG Charts | 2 | Renderizado de curva SVG de rendimiento, timeline temporal en ES/EN y tooltips reactivos. |
+| 13 | `tests/server/server-telemetry.test.ts` | In-Memory Server | 3 | Adición de eventos de telemetría, límite estricto de capacidad del buffer circular (máx 25 eventos) y vaciado (`clearTelemetryEvents`). |
+| 14 | `tests/server/server-analytics.test.ts` | Analytics Logic | 2 | Cálculo dinámico de métricas operativas agregadas sobre rangos temporales `7d`, `30d` y `90d`. |
+
+---
+
+### 3. Comandos de Ejecución
+
+```bash
+# Ejecutar todas las pruebas unitarias y de integración
+npm run test
+
+# Modo interactivo / observador (Watch Mode)
+npm run test:watch
+```
+
+---
+
 ## Hoja de Ruta Actualizada para Próximas Fases
 
 * [x] **Fase 1: Arquitectura Base, Design System e i18n** *(Completado)*
@@ -308,10 +351,7 @@ Se demostró que la traducción dinámica de tarjetas **no es complicada**, sino
 * [x] **Fase 5: Motor de Workflows & Automatizaciones Operativas (Pipelines, Triggers de Eventos y Ejecución en Tiempo Real)** *(Completado)*
 * [x] **Fase 6: Métricas Operativas & Telemetría en Tiempo Real (Analytics Dashboard)** *(Completado)*
 * [x] **Módulo Especial: Internacionalización Integral (i18n) & Localización Dinámica de Tarjetas** *(Completado)*
-* [ ] **Fase 7: Suite de Testing Automatizado con Jest / React Testing Library & Vitest**
+* [x] **Fase 7: Suite de Testing Automatizado con Vitest & React Testing Library** *(Completado - 14 suites, 46 tests pasando 100%)*
 * [ ] **Fase 8: Auditoría Final de Rendimiento, Optimización de Producción y Push Remoto a GitHub**
 * [ ] **Fase 9 (Hito Final): Versión Mobile App mediante Vía Híbrida / Empaquetado Nativo: Capacitor (Ionic)** *(Sincronización multiplataforma, feedback háptico en drag-and-drop, notificaciones push nativas y empaquetado para iOS/Android)*
-
-
-
 

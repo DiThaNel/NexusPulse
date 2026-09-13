@@ -77,6 +77,12 @@ npm install
 
 # Start development server
 npm run dev
+
+# Run automated test suite (Vitest + RTL)
+npm run test
+
+# Run tests in interactive watch mode
+npm run test:watch
 ```
 
 Visit [http://localhost:3000](http://localhost:3000) in your browser.
@@ -99,7 +105,7 @@ Detailed technical documentation, architectural decisions, and verification reco
 - [x] **Fase 4:** Server State & Optimistic UI with TanStack Query (0ms optimistic latency, automatic error rollback & modal physics).
 - [x] **Fase 5:** Interactive Workflows & Operational Automations Engine (Event Triggers, Pipelines & Real-time Runner).
 - [x] **Fase 6:** Real-time Operational Telemetry & Analytics Dashboard.
-- [ ] **Fase 7:** Automated Testing Suite with Jest / React Testing Library & Vitest.
+- [x] **Fase 7:** Automated Testing Suite with Vitest & React Testing Library (14 test suites, 46 tests, 100% passing).
 - [ ] **Fase 8:** Final Production Build, Performance Audits & Remote Push to GitHub.
 - [ ] **Fase 9 (Final Milestone):** Mobile App via Hybrid / Native Packaging with Capacitor (Ionic) (Cross-platform packaging, haptic DnD feedback, push notifications & iOS/Android builds).
 
