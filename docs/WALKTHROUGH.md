@@ -4,9 +4,9 @@ This document serves as the official technical engineering record for **NexusPul
 
 ---
 
-## 📑 Table of Contents
+## Table of Contents
 
-1. [🛠️ Tech Stack & Tool Catalog: In-Depth Purpose and Role](#️-tech-stack--tool-catalog-in-depth-purpose-and-role)
+1. [Tech Stack & Tool Catalog: In-Depth Purpose and Role](#tech-stack--tool-catalog-in-depth-purpose-and-role)
 2. [Phase 1: Foundations, Design System & Bilingual Support](#phase-1-foundations-design-system--bilingual-support)
 3. [Phase 2: SaaS Application Shell, Command Palette & RBAC](#phase-2-saas-application-shell-command-palette--rbac)
 4. [Phase 3: Interactive Kanban Board with Drag & Drop](#phase-3-interactive-kanban-board-with-drag--drop)
@@ -22,7 +22,7 @@ This document serves as the official technical engineering record for **NexusPul
 
 ---
 
-## 🛠️ Tech Stack & Tool Catalog: In-Depth Purpose and Role
+## Tech Stack & Tool Catalog: In-Depth Purpose and Role
 
 Below is the complete catalog of core technologies, libraries, and utilities utilized across **NexusPulse**, with technical justification for each selection:
 
@@ -211,7 +211,7 @@ Transform `/workflows` into an interactive, multi-stage orchestration engine. Pr
   * `POST /api/workflows/[id]/run`: Real-time execution simulation generating sequential timestamped logs and incrementing run counters.
 * **In-App Reactive Event Dispatcher ([server-workflows.ts](file:///C:/Users/Gabri/Desktop/NexusPulse/src/lib/server-workflows.ts) & [api/tasks/[id]/route.ts](file:///C:/Users/Gabri/Desktop/NexusPulse/src/app/api/tasks/[id]/route.ts))**:
   * Built-in reactive listener `triggerTaskWorkflows(task)`: Moving any task to `Done` automatically evaluates active workflows with trigger `event`.
-  * Dispatches instant in-app toast notifications (*"⚡ Workflow Disparado"*) and records permanent alerts into the **Automation Center**.
+  * Dispatches instant in-app toast notifications (*"Workflow Disparado"*) and records permanent alerts into the **Automation Center**.
   * Prevents execution when a workflow is paused by the user.
 * **Interactive UI Components**:
   * **`WorkflowCard` (`src/components/workflows/workflow-card.tsx`)**: Telemetry badges, success rate, run statistics, pause/resume toggle, and instant execution trigger.
