@@ -22,10 +22,8 @@ export function ThroughputChart({ data }: ThroughputChartProps) {
   const paddingTop = 25;
   const paddingBottom = 35;
 
-  const maxVal = Math.max(
-    ...data.map((d) => Math.max(d.completed, d.created)),
-    10
-  );
+  const rawMax = Math.max(...data.map((d) => Math.max(d.completed, d.created)), 1);
+  const maxVal = Math.max(rawMax <= 5 ? 5 : Math.ceil(rawMax * 1.2), 5);
 
   const getX = (index: number) => {
     return paddingX + (index / (data.length - 1)) * (width - 2 * paddingX);

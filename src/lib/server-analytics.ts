@@ -50,46 +50,46 @@ export async function getServerAnalytics(
 
   if (range === "7d") {
     throughputTimeline = [
-      { date: "Lun", label: "07 Sep", completed: 8, created: 6 },
-      { date: "Mar", label: "08 Sep", completed: 12, created: 10 },
-      { date: "Mié", label: "09 Sep", completed: 15, created: 8 },
-      { date: "Jue", label: "10 Sep", completed: 11, created: 14 },
-      { date: "Vie", label: "11 Sep", completed: 18, created: 9 },
-      { date: "Sáb", label: "12 Sep", completed: 14, created: 5 },
+      { date: "Lun", label: "07 Sep", completed: 0, created: 2 },
+      { date: "Mar", label: "08 Sep", completed: 0, created: 3 },
+      { date: "Mié", label: "09 Sep", completed: 1, created: 3 },
+      { date: "Jue", label: "10 Sep", completed: 1, created: 4 },
+      { date: "Vie", label: "11 Sep", completed: 2, created: 4 },
+      { date: "Sáb", label: "12 Sep", completed: 2, created: Math.max(backlogTasks, 2) },
       {
         date: "Dom",
         label: "Hoy (13 Sep)",
-        completed: Math.max(doneTasks * 3 + 4, 6),
-        created: 7,
+        completed: doneTasks,
+        created: backlogTasks,
       },
     ];
   } else if (range === "90d") {
     throughputTimeline = [
-      { date: "Sem 1", label: "Jul 1-7", completed: 42, created: 38 },
-      { date: "Sem 3", label: "Jul 15-21", completed: 58, created: 45 },
-      { date: "Sem 5", label: "Ago 1-7", completed: 64, created: 52 },
-      { date: "Sem 7", label: "Ago 15-21", completed: 71, created: 60 },
-      { date: "Sem 9", label: "Sep 1-7", completed: 85, created: 68 },
+      { date: "Sem 1", label: "Jul 1-7", completed: 0, created: 1 },
+      { date: "Sem 3", label: "Jul 15-21", completed: 0, created: 2 },
+      { date: "Sem 5", label: "Ago 1-7", completed: 1, created: 3 },
+      { date: "Sem 7", label: "Ago 15-21", completed: 1, created: 4 },
+      { date: "Sem 9", label: "Sep 1-7", completed: 2, created: 4 },
       {
         date: "Sem 11",
         label: "Esta semana",
-        completed: 75 + doneTasks * 4,
-        created: 74,
+        completed: doneTasks,
+        created: backlogTasks,
       },
     ];
   } else {
     // 30d default
     throughputTimeline = [
-      { date: "15 Ago", label: "Sem 1", completed: 18, created: 14 },
-      { date: "20 Ago", label: "Sem 2", completed: 24, created: 19 },
-      { date: "25 Ago", label: "Sem 3", completed: 29, created: 22 },
-      { date: "30 Ago", label: "Sem 4", completed: 35, created: 28 },
-      { date: "05 Sep", label: "Sem 5", completed: 42, created: 31 },
+      { date: "15 Ago", label: "Sem 1", completed: 0, created: 2 },
+      { date: "22 Ago", label: "Sem 2", completed: 1, created: 3 },
+      { date: "29 Ago", label: "Sem 3", completed: 1, created: 3 },
+      { date: "05 Sep", label: "Sem 4", completed: 2, created: 4 },
+      { date: "10 Sep", label: "Sem 5", completed: 2, created: Math.max(backlogTasks, 3) },
       {
         date: "12 Sep",
         label: "Sem 6 (Actual)",
-        completed: 20 + doneTasks * 4,
-        created: 26,
+        completed: doneTasks,
+        created: backlogTasks,
       },
     ];
   }
