@@ -1,4 +1,5 @@
 import { Task, Workflow, WorkflowRunLog, TelemetryLog } from "@/types";
+import type { AppNotification } from "@/stores/notification-store";
 
 export interface BilingualText {
   es: string;
@@ -550,3 +551,167 @@ export function localizeTelemetry(log: import("@/types").TelemetryLog, locale: "
     target,
   };
 }
+
+/**
+ * Localizes in-app notifications and toasts based on active locale
+ */
+export function localizeNotification(
+  notif: AppNotification,
+  locale: "es" | "en"
+): AppNotification {
+  if (!notif) return notif;
+
+  if (locale === "es") {
+    let title = notif.title;
+    let message = notif.message;
+
+    // Spanish titles
+    if (title.includes("Rollback") || title.includes("Automatic Rollback")) {
+      title = "Rollback Automático Activado";
+    } else if (title.includes("Synchronized with Server") || title.includes("Sincronizado con el Servidor")) {
+      title = "Sincronizado con el Servidor";
+    } else if (title.includes("Workflow Activated") || title.includes("Workflow Activado")) {
+      title = "Workflow Activado";
+    } else if (title.includes("Workflow Paused") || title.includes("Workflow Pausado")) {
+      title = "Workflow Pausado";
+    } else if (title.includes("Workflow Executed") || title.includes("Workflow Ejecutado")) {
+      title = "⚡ Workflow Ejecutado";
+    } else if (title.includes("Workflow Created") || title.includes("Workflow Creado")) {
+      title = "Workflow Creado con Éxito";
+    } else if (title.includes("Workflow Deleted") || title.includes("Workflow Eliminado")) {
+      title = "Workflow Eliminado";
+    } else if (title.includes("Task Created") || title.includes("Tarea Creada")) {
+      title = "Tarea Creada con Éxito";
+    } else if (title.includes("Task Deleted") || title.includes("Tarea Eliminada")) {
+      title = "Tarea Eliminada";
+    } else if (title.includes("Simulated Server Error") || title.includes("Error de Servidor Simulado")) {
+      title = "Error de Servidor Simulado";
+    } else if (title.includes("⚡ Workflow:")) {
+      title = title
+        .replace(/In-App Alert on Task Completion/gi, "Notificación In-App al Completar Tarea")
+        .replace(/GitHub Sync & Deploy Trigger/gi, "Disparador Sincronización GitHub")
+        .replace(/Kanban Task SLA Escalation/gi, "Escalamiento SLA Kanban")
+        .replace(/Daily Operations Health Check/gi, "Verificación Diaria de Operaciones & Salud")
+        .replace(/Done Task Telemetry Archival/gi, "Archivado de Telemetría de Tareas Completadas");
+    }
+
+    if (message) {
+      if (message.includes("The server simulated a network error") || message.includes("El servidor simuló un fallo de red")) {
+        message = "El servidor simuló un fallo de red. La tarea regresó instantáneamente a su columna original.";
+      } else if (message.includes("via TanStack Query") || message.includes("a través de TanStack Query")) {
+        message = "Cambio persistido en el backend a través de TanStack Query.";
+      } else if (message.includes("automatically listen and process events") || message.includes("escuchará y procesará eventos automáticamente")) {
+        message = "El pipeline ahora escuchará y procesará eventos automáticamente.";
+      } else if (message.includes("Automated executions and event listeners have been") || message.includes("Las ejecuciones automáticas y escuchadores de eventos han sido")) {
+        message = "Las ejecuciones automáticas y escuchadores de eventos han sido detenidos.";
+      } else if (message.includes("Manual execution completed successfully") || message.includes("Ejecución manual completada con éxito")) {
+        message = "Ejecución manual completada con éxito. Telemetría sincronizada.";
+      } else if (message.includes("New automation has been saved") || message.includes("La nueva automatización ha sido guardada")) {
+        message = "La nueva automatización ha sido guardada y está lista para operar.";
+      } else if (message.includes("removed from the catalog") || message.includes("removida del catálogo")) {
+        message = "La automatización ha sido removida del catálogo.";
+      } else if (message.includes("new task has been validated") || message.includes("La nueva tarea ha sido validada")) {
+        message = "La nueva tarea ha sido validada y persistida.";
+      } else if (message.includes("task has been removed from the board") || message.includes("La tarea ha sido removida del tablero")) {
+        message = "La tarea ha sido removida del tablero.";
+      } else {
+        let msg = message.replace(
+          /Task "([^"]+)" was completed\.\s*Automation\s+(?:successfully\s+executed|executed\s+successfully|executed)(?:\.)?/gi,
+          'La tarea "$1" fue completada. Automatización ejecutada con éxito.'
+        );
+        Object.values(TASK_TRANSLATIONS).forEach((trans) => {
+          if (msg.includes(trans.title.en)) {
+            msg = msg.replaceAll(trans.title.en, trans.title.es);
+          }
+        });
+        message = msg
+          .replace(/Design HSL Token Architecture/gi, "Diseñar arquitectura de tokens HSL")
+          .replace(/Integrate @dnd-kit to Kanban/gi, "Integrar @dnd-kit al Kanban")
+          .replace(/Audit Session Security with Edge/gi, "Auditar seguridad de sesión con Edge");
+      }
+    }
+
+    return {
+      ...notif,
+      title,
+      message,
+    };
+  }
+
+  // English
+  let title = notif.title;
+  let message = notif.message;
+
+  // English titles
+  if (title.includes("Rollback Automático") || title.includes("Automatic Rollback")) {
+    title = "Automatic Rollback Triggered";
+  } else if (title.includes("Sincronizado con el Servidor") || title.includes("Synchronized with Server")) {
+    title = "Synchronized with Server";
+  } else if (title.includes("Workflow Activado") || title.includes("Workflow Activated")) {
+    title = "Workflow Activated";
+  } else if (title.includes("Workflow Pausado") || title.includes("Workflow Paused")) {
+    title = "Workflow Paused";
+  } else if (title.includes("Workflow Ejecutado") || title.includes("Workflow Executed")) {
+    title = "⚡ Workflow Executed";
+  } else if (title.includes("Workflow Creado") || title.includes("Workflow Created")) {
+    title = "Workflow Created Successfully";
+  } else if (title.includes("Workflow Eliminado") || title.includes("Workflow Deleted")) {
+    title = "Workflow Deleted";
+  } else if (title.includes("Tarea Creada") || title.includes("Task Created")) {
+    title = "Task Created Successfully";
+  } else if (title.includes("Tarea Eliminada") || title.includes("Task Deleted")) {
+    title = "Task Deleted";
+  } else if (title.includes("Error de Servidor Simulado") || title.includes("Simulated Server Error")) {
+    title = "Simulated Server Error";
+  } else if (title.includes("⚡ Workflow:")) {
+    title = title
+      .replace(/Notificación In-App al Completar Tarea/gi, "In-App Alert on Task Completion")
+      .replace(/Disparador Sincronización GitHub/gi, "GitHub Sync & Deploy Trigger")
+      .replace(/Escalamiento SLA Kanban/gi, "Kanban Task SLA Escalation")
+      .replace(/Verificación Diaria de Operaciones & Salud/gi, "Daily Operations Health Check")
+      .replace(/Archivado de Telemetría de Tareas Completadas/gi, "Done Task Telemetry Archival");
+  }
+
+  if (message) {
+    if (message.includes("El servidor simuló un fallo de red") || message.includes("The server simulated a network error")) {
+      message = "The server simulated a network error. Task was restored to its original column.";
+    } else if (message.includes("a través de TanStack Query") || message.includes("via TanStack Query")) {
+      message = "Change persisted in backend via TanStack Query.";
+    } else if (message.includes("escuchará y procesará eventos automáticamente") || message.includes("automatically listen and process events")) {
+      message = "The pipeline will now automatically listen and process events.";
+    } else if (message.includes("Las ejecuciones automáticas y escuchadores de eventos han sido") || message.includes("Automated executions and event listeners have been")) {
+      message = "Automated executions and event listeners have been paused.";
+    } else if (message.includes("Ejecución manual completada con éxito") || message.includes("Manual execution completed successfully")) {
+      message = "Manual execution completed successfully. Telemetry synchronized.";
+    } else if (message.includes("La nueva automatización ha sido guardada") || message.includes("New automation has been saved")) {
+      message = "New automation has been saved and is ready to operate.";
+    } else if (message.includes("removida del catálogo") || message.includes("removed from the catalog")) {
+      message = "The automation has been removed from the catalog.";
+    } else if (message.includes("La nueva tarea ha sido validada") || message.includes("new task has been validated")) {
+      message = "New task has been validated and persisted.";
+    } else if (message.includes("La tarea ha sido removida del tablero") || message.includes("task has been removed from the board")) {
+      message = "The task has been removed from the board.";
+    } else {
+      let msg = message.replace(
+        /La tarea "([^"]+)" fue completada\.\s*Automatización\s+(?:ejecutada\s+con\s+éxito|ejecutada)(?:\.)?/gi,
+        'Task "$1" was completed. Automation executed successfully.'
+      );
+      Object.values(TASK_TRANSLATIONS).forEach((trans) => {
+        if (msg.includes(trans.title.es)) {
+          msg = msg.replaceAll(trans.title.es, trans.title.en);
+        }
+      });
+      message = msg
+        .replace(/Diseñar arquitectura de tokens HSL/gi, "Design HSL Token Architecture")
+        .replace(/Integrar @dnd-kit al Kanban/gi, "Integrate @dnd-kit to Kanban")
+        .replace(/Auditar seguridad de sesión con Edge/gi, "Audit Session Security with Edge");
+    }
+  }
+
+  return {
+    ...notif,
+    title,
+    message,
+  };
+}
+

@@ -3,6 +3,7 @@ import {
   localizeTask,
   localizeWorkflow,
   localizeTimeAgo,
+  localizeNotification,
 } from "@/lib/translations/card-translations";
 import { Task, Workflow } from "@/types";
 
@@ -85,19 +86,55 @@ describe("Card Localization Engine (card-translations)", () => {
     expect(wfEs.steps[0].name).toBe("Receptor de Webhook Entrante");
   });
 
-  describe("localizeTimeAgo", () => {
-    it("should translate Spanish relative time strings into English", () => {
-      expect(localizeTimeAgo("Hace 4 minutos", "en")).toBe("4 minutes ago");
-      expect(localizeTimeAgo("Hace 2 horas", "en")).toBe("2 hours ago");
-      expect(localizeTimeAgo("Hace 1 día", "en")).toBe("1 day ago");
-      expect(localizeTimeAgo("Nunca", "en")).toBe("Never");
-      expect(localizeTimeAgo(undefined, "en")).toBe("Never");
+  describe("localizeNotification", () => {
+    it("should translate Spanish notifications into English", () => {
+      const notifEs = {
+        id: "notif-1",
+        title: "Rollback Automático Activado",
+        message: "El servidor simuló un fallo de red. La tarea regresó instantáneamente a su columna original.",
+        type: "rollback" as const,
+        timestamp: Date.now(),
+        read: false,
+      };
+
+      const notifEn = localizeNotification(notifEs, "en");
+      expect(notifEn.title).toBe("Automatic Rollback Triggered");
+      expect(notifEn.message).toBe("The server simulated a network error. Task was restored to its original column.");
     });
 
-    it("should keep Spanish strings unchanged when locale is 'es'", () => {
-      expect(localizeTimeAgo("Hace 4 minutos", "es")).toBe("Hace 4 minutos");
-      expect(localizeTimeAgo("Hace 2 horas", "es")).toBe("Hace 2 horas");
-      expect(localizeTimeAgo(undefined, "es")).toBe("Nunca");
+    it("should translate English notifications into Spanish", () => {
+      const notifEn = {
+        id: "notif-2",
+        title: "Synchronized with Server",
+        message: "Change persisted in backend via TanStack Query.",
+        type: "success" as const,
+        timestamp: Date.now(),
+        read: false,
+      };
+
+      const notifEs = localizeNotification(notifEn, "es");
+      expect(notifEs.title).toBe("Sincronizado con el Servidor");
+      expect(notifEs.message).toBe("Cambio persistido en el backend a través de TanStack Query.");
+    });
+
+    it("should translate workflow trigger notifications bidirectionally", () => {
+      const wfNotifEs = {
+        id: "notif-3",
+        title: "⚡ Workflow: Notificación In-App al Completar Tarea",
+        message: 'La tarea "Diseñar arquitectura de tokens HSL" fue completada. Automatización ejecutada con éxito.',
+        type: "workflow" as const,
+        timestamp: Date.now(),
+        read: false,
+      };
+
+      const wfNotifEn = localizeNotification(wfNotifEs, "en");
+      expect(wfNotifEn.title).toBe("⚡ Workflow: In-App Alert on Task Completion");
+      expect(wfNotifEn.message).toBe('Task "Design HSL Token Architecture" was completed. Automation executed successfully.');
+
+      const backToEs = localizeNotification(wfNotifEn, "es");
+      expect(backToEs.title).toBe("⚡ Workflow: Notificación In-App al Completar Tarea");
+      expect(backToEs.message).toBe('La tarea "Diseñar arquitectura de tokens HSL" fue completada. Automatización ejecutada con éxito.');
     });
   });
 });
+

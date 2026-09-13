@@ -4,6 +4,7 @@ import * as React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNotificationStore } from "@/stores/notification-store";
 import { useLanguage } from "@/components/language-provider";
+import { localizeNotification } from "@/lib/translations/card-translations";
 import { Bell, Zap, CheckCircle2, AlertTriangle, RotateCcw, Info, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -115,8 +116,9 @@ export function NotificationBell() {
                 </div>
               ) : (
                 history.map((item) => {
-                  const isWf = item.type === "workflow";
-                  const dateStr = new Date(item.timestamp).toLocaleTimeString([], {
+                  const localized = localizeNotification(item, locale);
+                  const isWf = localized.type === "workflow";
+                  const dateStr = new Date(localized.timestamp).toLocaleTimeString([], {
                     hour: "2-digit",
                     minute: "2-digit",
                     second: "2-digit",
@@ -124,7 +126,7 @@ export function NotificationBell() {
 
                   return (
                     <div
-                      key={item.id}
+                      key={localized.id}
                       className={`p-3.5 flex items-start gap-3 transition-colors ${
                         isWf ? "bg-primary/5 hover:bg-primary/10" : "hover:bg-muted/30"
                       }`}
@@ -134,11 +136,11 @@ export function NotificationBell() {
                           <div className="h-6 w-6 rounded-lg bg-primary/20 flex items-center justify-center text-primary shadow-sm">
                             <Zap className="h-3.5 w-3.5 fill-primary" />
                           </div>
-                        ) : item.type === "rollback" ? (
+                        ) : localized.type === "rollback" ? (
                           <RotateCcw className="h-4 w-4 text-amber-500" />
-                        ) : item.type === "success" ? (
+                        ) : localized.type === "success" ? (
                           <CheckCircle2 className="h-4 w-4 text-emerald-500" />
-                        ) : item.type === "warning" ? (
+                        ) : localized.type === "warning" ? (
                           <AlertTriangle className="h-4 w-4 text-amber-500" />
                         ) : (
                           <Info className="h-4 w-4 text-primary" />
@@ -148,15 +150,15 @@ export function NotificationBell() {
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between gap-1">
                           <div className="text-xs font-semibold text-foreground truncate">
-                            {item.title}
+                            {localized.title}
                           </div>
                           <span className="text-[10px] text-muted-foreground font-mono shrink-0">
                             {dateStr}
                           </span>
                         </div>
-                        {item.message && (
+                        {localized.message && (
                           <p className="text-[11px] text-muted-foreground mt-0.5 leading-snug break-words">
-                            {item.message}
+                            {localized.message}
                           </p>
                         )}
                       </div>

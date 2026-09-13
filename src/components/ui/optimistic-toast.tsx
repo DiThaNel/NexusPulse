@@ -3,10 +3,13 @@
 import * as React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNotificationStore } from "@/stores/notification-store";
+import { useLanguage } from "@/components/language-provider";
+import { localizeNotification } from "@/lib/translations/card-translations";
 import { AlertTriangle, CheckCircle2, Info, RotateCcw, X, Zap } from "lucide-react";
 
 export function OptimisticToastContainer() {
   const { notifications, dismissNotification } = useNotificationStore();
+  const { locale } = useLanguage();
   const [mounted, setMounted] = React.useState(false);
 
   React.useEffect(() => {
@@ -19,14 +22,15 @@ export function OptimisticToastContainer() {
     <div className="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none max-w-sm w-full px-4 sm:px-0">
       <AnimatePresence mode="popLayout">
         {notifications.map((notif) => {
-          const isWorkflow = notif.type === "workflow";
-          const isRollback = notif.type === "rollback";
-          const isSuccess = notif.type === "success";
-          const isWarning = notif.type === "warning";
+          const localized = localizeNotification(notif, locale);
+          const isWorkflow = localized.type === "workflow";
+          const isRollback = localized.type === "rollback";
+          const isSuccess = localized.type === "success";
+          const isWarning = localized.type === "warning";
 
           return (
             <motion.div
-              key={notif.id}
+              key={localized.id}
               layout
               initial={{ opacity: 0, y: 16, scale: 0.96 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -62,19 +66,19 @@ export function OptimisticToastContainer() {
 
               <div className="flex-1 min-w-0">
                 <div className="text-xs font-semibold tracking-tight leading-snug">
-                  {notif.title}
+                  {localized.title}
                 </div>
-                {notif.message && (
+                {localized.message && (
                   <p className="text-[11px] opacity-80 mt-0.5 leading-relaxed">
-                    {notif.message}
+                    {localized.message}
                   </p>
                 )}
               </div>
 
               <button
-                onClick={() => dismissNotification(notif.id)}
+                onClick={() => dismissNotification(localized.id)}
                 className="opacity-50 hover:opacity-100 p-0.5 rounded transition-opacity"
-                aria-label="Cerrar notificación"
+                aria-label={locale === "es" ? "Cerrar notificación" : "Dismiss notification"}
               >
                 <X className="h-3.5 w-3.5" />
               </button>
