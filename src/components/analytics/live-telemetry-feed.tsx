@@ -50,7 +50,7 @@ export function LiveTelemetryFeed({ logs }: LiveTelemetryFeedProps) {
 
           <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full border border-border/40 bg-card text-[10px] font-mono text-muted-foreground">
             <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
-            <span>{locale === "es" ? "TRANSMISIÓN EN VIVO" : "LIVE STREAM"}</span>
+            <span>{locale === "es" ? "transmisión en vivo" : "live stream"}</span>
           </div>
         </div>
       </div>

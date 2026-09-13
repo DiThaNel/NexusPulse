@@ -40,7 +40,7 @@ describe("LiveTelemetryFeed Component", () => {
     expect(screen.getByText("Elena Rostova")).toBeInTheDocument();
     expect(screen.getByText(/38\s*ms/)).toBeInTheDocument();
     expect(screen.getByText("201 Created")).toBeInTheDocument();
-    expect(screen.getByText("TRANSMISIÓN EN VIVO")).toBeInTheDocument();
+    expect(screen.getByText("transmisión en vivo")).toBeInTheDocument();
   });
 
   it("should localize actions and badge into English when locale is en", () => {
@@ -48,7 +48,7 @@ describe("LiveTelemetryFeed Component", () => {
 
     expect(screen.getByText("TASK STATUS CHANGED")).toBeInTheDocument();
     expect(screen.getByText("WORKFLOW EXECUTED")).toBeInTheDocument();
-    expect(screen.getByText("LIVE STREAM")).toBeInTheDocument();
+    expect(screen.getByText("live stream")).toBeInTheDocument();
   });
 
   it("should render clean terminal empty state when logs are empty", () => {
