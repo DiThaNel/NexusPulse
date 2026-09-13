@@ -18,12 +18,10 @@ Built with strict enterprise engineering standards, clean architecture, zero-hyd
 
 1. [Key Features](#-key-features)
 2. [Core Architecture & Tech Stack](#-core-architecture--tech-stack)
-3. [Deployment to Vercel](#-deployment-to-vercel)
-4. [Getting Started (Local Development)](#-getting-started-local-development)
-5. [Automated Testing Suite](#-automated-testing-suite)
-6. [Project Directory Structure](#-project-directory-structure)
-7. [Engineering Roadmap](#-engineering-roadmap)
-8. [Comprehensive Documentation](#-comprehensive-documentation)
+3. [Automated Testing Suite](#-automated-testing-suite)
+4. [Project Directory Structure](#-project-directory-structure)
+5. [Engineering Roadmap](#-engineering-roadmap)
+6. [Comprehensive Documentation](#-comprehensive-documentation)
 
 ---
 
