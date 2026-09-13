@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerAnalytics } from "@/lib/server-analytics";
+import { clearServerTelemetry } from "@/lib/server-telemetry";
 import { AnalyticsTimeRange } from "@/types";
 
 export async function GET(request: NextRequest) {
@@ -18,3 +19,16 @@ export async function GET(request: NextRequest) {
     );
   }
 }
+
+export async function DELETE() {
+  try {
+    clearServerTelemetry();
+    return NextResponse.json({ success: true, message: "Telemetry events cleared" }, { status: 200 });
+  } catch (error) {
+    return NextResponse.json(
+      { error: "Error al limpiar eventos de telemetría", details: String(error) },
+      { status: 500 }
+    );
+  }
+}
+

@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { AnalyticsPayload, AnalyticsTimeRange } from "@/types";
 
 export const ANALYTICS_QUERY_KEY = ["analytics"];
@@ -17,3 +17,18 @@ export function useAnalyticsQuery(range: AnalyticsTimeRange = "30d") {
     refetchOnWindowFocus: true,
   });
 }
+
+export function useClearTelemetryMutation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async () => {
+      const res = await fetch("/api/analytics", { method: "DELETE" });
+      if (!res.ok) throw new Error("Error al limpiar eventos");
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ANALYTICS_QUERY_KEY });
+    },
+  });
+}
+
