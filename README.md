@@ -74,7 +74,7 @@ Built with strict enterprise engineering standards, clean architecture, zero-hyd
 
 ---
 
-## 🧪 Automated Testing Suite
+## Automated Testing Suite
 
 NexusPulse features a comprehensive, high-speed test suite powered by **Vitest v5** and **React Testing Library v16**.
 
