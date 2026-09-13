@@ -1,22 +1,25 @@
 "use client";
 
+import * as React from "react";
 import { motion, type Variants } from "framer-motion";
 import Link from "next/link";
 import {
   ArrowRight,
-  ArrowUpRight,
+  BarChart3,
   Check,
   Command,
   GitFork,
   KanbanSquare,
+  ShieldCheck,
   Sparkles,
 } from "lucide-react";
-import { GithubIcon } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useLanguage } from "@/components/language-provider";
 import { useUIStore } from "@/stores/ui-store";
-import { siteConfig } from "@/config/site";
+import { useTasksQuery } from "@/hooks/use-tasks-query";
+import { useWorkflowsQuery } from "@/hooks/use-workflows-query";
+import { useAnalyticsQuery } from "@/hooks/use-analytics-query";
 
 // Motion variants for clean, staggered entrance
 const containerVariants: Variants = {
@@ -43,6 +46,13 @@ export default function HomePage() {
   const { t } = useLanguage();
   const { setCommandPaletteOpen } = useUIStore();
 
+  // Pull live data for reactive Overview cards
+  const { data: tasks = [] } = useTasksQuery();
+  const { data: workflows = [] } = useWorkflowsQuery();
+  const { data: analytics } = useAnalyticsQuery("30d");
+
+  const completedTasks = tasks.filter((t) => t.status === "done").length;
+
   return (
     <motion.div
       initial="hidden"
@@ -55,13 +65,13 @@ export default function HomePage() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="space-y-1">
             <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full border border-border/50 bg-muted/30 text-muted-foreground text-[11px] font-medium">
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
               {t.hero.statusBadge}
             </div>
             <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-foreground">
               {t.hero.title}
             </h1>
-            <p className="text-sm text-muted-foreground max-w-2xl leading-relaxed">
+            <p className="text-sm text-muted-foreground max-w-3xl leading-relaxed">
               {t.hero.description}
             </p>
           </div>
@@ -86,7 +96,7 @@ export default function HomePage() {
         </div>
       </motion.section>
 
-      {/* Telemetry Metrics Row */}
+      {/* Telemetry Core Metrics Row */}
       <motion.section variants={itemVariants} className="space-y-3">
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {t.metrics.items.map((metric) => (
@@ -110,8 +120,12 @@ export default function HomePage() {
         </div>
       </motion.section>
 
-      {/* Quick Access Operational Cards */}
-      <motion.section variants={itemVariants} className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      {/* Quick Access Operational Cards (Live Connected) */}
+      <motion.section
+        variants={itemVariants}
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
+      >
+        {/* Kanban Board */}
         <Link
           href="/board"
           className="group p-4 rounded-xl border border-border/50 bg-card/30 hover:bg-card/70 hover:border-border transition-all duration-150 flex flex-col justify-between space-y-3"
@@ -124,13 +138,16 @@ export default function HomePage() {
             <ArrowRight className="h-3.5 w-3.5 text-muted-foreground group-hover:translate-x-0.5 transition-transform" />
           </div>
           <div>
-            <div className="text-lg font-semibold text-foreground">12 Tareas Activas</div>
-            <p className="text-xs text-muted-foreground mt-0.5">
-              Preparado para Drag & Drop con @dnd-kit en Fase 3.
+            <div className="text-lg font-semibold text-foreground">
+              {tasks.length} Tareas Activas
+            </div>
+            <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">
+              Drag & drop con @dnd-kit, mutaciones optimistas y validación Zod.
             </p>
           </div>
         </Link>
 
+        {/* Workflows */}
         <Link
           href="/workflows"
           className="group p-4 rounded-xl border border-border/50 bg-card/30 hover:bg-card/70 hover:border-border transition-all duration-150 flex flex-col justify-between space-y-3"
@@ -143,20 +160,45 @@ export default function HomePage() {
             <ArrowRight className="h-3.5 w-3.5 text-muted-foreground group-hover:translate-x-0.5 transition-transform" />
           </div>
           <div>
-            <div className="text-lg font-semibold text-foreground">6 Workflows en Vivo</div>
-            <p className="text-xs text-muted-foreground mt-0.5">
-              Automatizaciones webhook y cron en tiempo real.
+            <div className="text-lg font-semibold text-foreground">
+              {workflows.length} Pipelines en Vivo
+            </div>
+            <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">
+              Automatizaciones webhook/cron y runner con consola de logs.
             </p>
           </div>
         </Link>
 
+        {/* Analytics */}
+        <Link
+          href="/analytics"
+          className="group p-4 rounded-xl border border-border/50 bg-card/30 hover:bg-card/70 hover:border-border transition-all duration-150 flex flex-col justify-between space-y-3"
+        >
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-medium text-muted-foreground flex items-center gap-2">
+              <BarChart3 className="h-3.5 w-3.5 text-indigo-500" />
+              Telemetría en Vivo
+            </span>
+            <ArrowRight className="h-3.5 w-3.5 text-muted-foreground group-hover:translate-x-0.5 transition-transform" />
+          </div>
+          <div>
+            <div className="text-lg font-semibold text-foreground">
+              {analytics ? `${analytics.overview.workflowSuccessRate}% Salud Core` : "Telemetría Activa"}
+            </div>
+            <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">
+              Gráficos SVG zero-hydration y sincronización reactiva en tiempo real.
+            </p>
+          </div>
+        </Link>
+
+        {/* Command Palette */}
         <div
           onClick={() => setCommandPaletteOpen(true)}
           className="group p-4 rounded-xl border border-border/50 bg-card/30 hover:bg-card/70 hover:border-border cursor-pointer transition-all duration-150 flex flex-col justify-between space-y-3"
         >
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-muted-foreground flex items-center gap-2">
-              <Command className="h-3.5 w-3.5 text-indigo-500" />
+              <Command className="h-3.5 w-3.5 text-amber-500" />
               Command Palette
             </span>
             <Badge variant="outline" className="text-[10px] font-mono py-0 px-1.5">
@@ -165,7 +207,7 @@ export default function HomePage() {
           </div>
           <div>
             <div className="text-lg font-semibold text-foreground">Búsqueda Rápida</div>
-            <p className="text-xs text-muted-foreground mt-0.5">
+            <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">
               Navega a cualquier vista o ejecuta acciones por teclado.
             </p>
           </div>
@@ -181,8 +223,9 @@ export default function HomePage() {
         {/* Foundation Highlights */}
         <div className="p-5 rounded-xl border border-border/50 bg-card/30 space-y-4">
           <div>
-            <h2 className="text-sm font-semibold tracking-tight text-foreground">
-              {t.foundations.title}
+            <h2 className="text-sm font-semibold tracking-tight text-foreground flex items-center gap-2">
+              <ShieldCheck className="h-4 w-4 text-emerald-500" />
+              <span>{t.foundations.title}</span>
             </h2>
             <p className="text-xs text-muted-foreground mt-0.5">
               {t.foundations.subtitle}
@@ -207,8 +250,9 @@ export default function HomePage() {
         {/* Development Roadmap */}
         <div className="p-5 rounded-xl border border-border/50 bg-card/30 space-y-4">
           <div>
-            <h2 className="text-sm font-semibold tracking-tight text-foreground">
-              {t.roadmap.title}
+            <h2 className="text-sm font-semibold tracking-tight text-foreground flex items-center gap-2">
+              <Sparkles className="h-4 w-4 text-primary" />
+              <span>{t.roadmap.title}</span>
             </h2>
             <p className="text-xs text-muted-foreground mt-0.5">
               {t.roadmap.subtitle}
