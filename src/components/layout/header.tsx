@@ -43,7 +43,7 @@ export function Header() {
           size="icon"
           className="md:hidden h-8 w-8 text-muted-foreground hover:text-foreground"
           onClick={() => setMobileSidebarOpen(true)}
-          aria-label="Abrir menú"
+          aria-label={t.shell.openMenu || "Abrir menú"}
         >
           <Menu className="h-4 w-4" />
         </Button>

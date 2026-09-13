@@ -95,7 +95,7 @@ export function Sidebar() {
             size="icon"
             className="md:hidden h-7 w-7"
             onClick={() => setMobileSidebarOpen(false)}
-            aria-label="Cerrar menú"
+            aria-label={t.shell.closeMenu || "Cerrar menú"}
           >
             <X className="h-4 w-4" />
           </Button>

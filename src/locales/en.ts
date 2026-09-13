@@ -14,6 +14,8 @@ export const en: typeof es = {
     workspaceRole: "Pro Team",
     collapseSidebar: "Collapse sidebar",
     expandSidebar: "Expand sidebar",
+    openMenu: "Open menu",
+    closeMenu: "Close menu",
     searchPlaceholder: "Search or press ⌘K...",
     nav: {
       overview: "Overview",

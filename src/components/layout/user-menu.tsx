@@ -52,6 +52,9 @@ export function UserMenu({ isCollapsed = false }: UserMenuProps) {
 
   // Ensure deterministic SSR render matching initial server snapshot
   const currentUser = (mounted ? user : DEMO_USERS[0]) || DEMO_USERS[0];
+  const roleLabel =
+    t.shell.auth.roles[currentUser.role as keyof typeof t.shell.auth.roles] ||
+    currentUser.role;
 
   const getRoleBadgeVariant = (role: string) => {
     switch (role) {
@@ -86,7 +89,7 @@ export function UserMenu({ isCollapsed = false }: UserMenuProps) {
                 variant={getRoleBadgeVariant(currentUser.role)}
                 className="text-[10px] uppercase tracking-wider py-0 px-1.5"
               >
-                {currentUser.role}
+                {roleLabel}
               </Badge>
             </div>
             <div className="text-[11px] text-muted-foreground truncate">
@@ -154,7 +157,7 @@ export function UserMenu({ isCollapsed = false }: UserMenuProps) {
           "w-full flex items-center gap-2.5 p-1.5 rounded-lg bg-muted/30 border border-border/40 hover:bg-muted/60 transition-all duration-150 text-left select-none group",
           isCollapsed ? "justify-center" : "justify-between"
         )}
-        title={`${currentUser.name} (${currentUser.role})`}
+        title={`${currentUser.name} (${roleLabel})`}
       >
         <div className="flex items-center gap-2.5 overflow-hidden">
           <div className="h-7 w-7 rounded-full bg-primary/20 text-primary flex items-center justify-center text-xs font-semibold shrink-0 group-hover:scale-105 transition-transform">
@@ -165,8 +168,8 @@ export function UserMenu({ isCollapsed = false }: UserMenuProps) {
               <span className="text-xs font-medium text-foreground truncate">
                 {currentUser.name}
               </span>
-              <span className="text-[10px] text-muted-foreground truncate capitalize">
-                {currentUser.role}
+              <span className="text-[10px] text-muted-foreground truncate">
+                {roleLabel}
               </span>
             </div>
           )}
