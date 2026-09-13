@@ -1,5 +1,6 @@
 import { type Task, type TaskPriority, type TaskStatus, DEMO_USERS } from "@/types";
 import { type TaskInput } from "@/lib/validations/task";
+import { addServerTelemetry } from "./server-telemetry";
 
 const INITIAL_SERVER_TASKS: Task[] = [
   {
@@ -157,6 +158,15 @@ export function createServerTask(input: TaskInput): Task {
   };
 
   serverTasks.unshift(newTask);
+
+  addServerTelemetry({
+    actor: newTask.assignee?.name || "Gabriel Gonçalves",
+    action: "TASK_CREATED",
+    target: `${newTask.id}: ${newTask.title.slice(0, 24)}...`,
+    latencyMs: Math.floor(Math.random() * 12) + 10,
+    status: "201 Created",
+  });
+
   return newTask;
 }
 
@@ -187,6 +197,7 @@ export function moveServerTask(
   if (index === -1) return null;
 
   const [task] = serverTasks.splice(index, 1);
+  const oldStatus = task.status;
   task.status = newStatus;
   task.updatedAt = new Date().toISOString();
 
@@ -196,13 +207,30 @@ export function moveServerTask(
     serverTasks.push(task);
   }
 
+  addServerTelemetry({
+    actor: task.assignee?.name || "Gabriel Gonçalves",
+    action: "TASK_STATUS_CHANGED",
+    target: `${task.id} (${oldStatus} → ${newStatus})`,
+    latencyMs: Math.floor(Math.random() * 14) + 8,
+    status: "200 OK",
+  });
+
   return task;
 }
 
 export function deleteServerTask(id: string): boolean {
   const index = serverTasks.findIndex((t) => t.id === id);
   if (index === -1) return false;
-  serverTasks.splice(index, 1);
+  const [removed] = serverTasks.splice(index, 1);
+
+  addServerTelemetry({
+    actor: "Gabriel Gonçalves",
+    action: "TASK_DELETED",
+    target: `${removed.id}: ${removed.title.slice(0, 20)}...`,
+    latencyMs: Math.floor(Math.random() * 8) + 6,
+    status: "200 OK",
+  });
+
   return true;
 }
 

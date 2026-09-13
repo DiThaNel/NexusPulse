@@ -135,9 +135,10 @@ export function useMoveTaskMutation(filters?: TaskFilters) {
       );
     },
 
-    // 4. Invalidate to refetch fresh server state
+    // 4. Invalidate to refetch fresh server state and update analytics
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: TASKS_QUERY_KEY });
+      queryClient.invalidateQueries({ queryKey: ["analytics"] });
     },
   });
 }
@@ -214,6 +215,7 @@ export function useCreateTaskMutation(filters?: TaskFilters) {
 
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: TASKS_QUERY_KEY });
+      queryClient.invalidateQueries({ queryKey: ["analytics"] });
     },
   });
 }
@@ -275,6 +277,7 @@ export function useDeleteTaskMutation(filters?: TaskFilters) {
 
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: TASKS_QUERY_KEY });
+      queryClient.invalidateQueries({ queryKey: ["analytics"] });
     },
   });
 }

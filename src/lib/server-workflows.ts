@@ -1,5 +1,6 @@
 import { Workflow, WorkflowRunLog, WorkflowStep } from "@/types";
 import { WorkflowInput } from "@/lib/validations/workflow";
+import { addServerTelemetry } from "./server-telemetry";
 
 // In-memory seeded database for workflows
 let workflowsDb: Workflow[] = [
@@ -261,6 +262,15 @@ export async function createServerWorkflow(input: WorkflowInput): Promise<Workfl
   };
 
   workflowsDb.unshift(newWorkflow);
+
+  addServerTelemetry({
+    actor: "Gabriel Gonçalves",
+    action: "WORKFLOW_CREATED",
+    target: newWorkflow.name,
+    latencyMs: 19,
+    status: "201 Created",
+  });
+
   return newWorkflow;
 }
 
@@ -278,6 +288,14 @@ export async function toggleServerWorkflowStatus(id: string): Promise<Workflow> 
     ...current,
     status: newStatus,
   };
+
+  addServerTelemetry({
+    actor: "Gabriel Gonçalves",
+    action: "WORKFLOW_STATUS_TOGGLED",
+    target: `${current.name} → ${newStatus.toUpperCase()}`,
+    latencyMs: 14,
+    status: "200 OK",
+  });
 
   return workflowsDb[index];
 }
@@ -341,6 +359,14 @@ export async function runServerWorkflow(
     lastRunStatus: "success",
     recentLogs: generatedLogs,
   };
+
+  addServerTelemetry({
+    actor: "Runner / Automated Engine",
+    action: "WORKFLOW_EXECUTED",
+    target: `${wf.name} (310ms)`,
+    latencyMs: 24,
+    status: "200 OK",
+  });
 
   return {
     workflow: workflowsDb[index],

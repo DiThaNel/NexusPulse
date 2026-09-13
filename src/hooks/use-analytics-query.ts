@@ -13,7 +13,7 @@ export function useAnalyticsQuery(range: AnalyticsTimeRange = "30d") {
       }
       return res.json() as Promise<AnalyticsPayload>;
     },
-    staleTime: 30 * 1000,
-    refetchOnWindowFocus: false,
+    staleTime: 0,
+    refetchOnWindowFocus: true,
   });
 }

@@ -89,6 +89,7 @@ export function useToggleWorkflowStatusMutation() {
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: WORKFLOWS_QUERY_KEY });
+      queryClient.invalidateQueries({ queryKey: ["analytics"] });
     },
   });
 }
@@ -119,6 +120,7 @@ export function useRunWorkflowMutation() {
         `Workflow '${data.workflow.name}' ejecutado con éxito (200 OK).`
       );
       queryClient.invalidateQueries({ queryKey: WORKFLOWS_QUERY_KEY });
+      queryClient.invalidateQueries({ queryKey: ["analytics"] });
     },
     onError: () => {
       showNotification(
@@ -154,6 +156,7 @@ export function useCreateWorkflowMutation() {
         `Automatización '${created.name}' añadida con éxito.`
       );
       queryClient.invalidateQueries({ queryKey: WORKFLOWS_QUERY_KEY });
+      queryClient.invalidateQueries({ queryKey: ["analytics"] });
     },
     onError: (err) => {
       showNotification(

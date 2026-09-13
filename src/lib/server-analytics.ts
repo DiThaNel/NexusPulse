@@ -9,23 +9,30 @@ import {
 } from "@/types";
 import { getServerTasks } from "./server-tasks";
 import { getServerWorkflows } from "./server-workflows";
+import { getServerTelemetry } from "./server-telemetry";
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export async function getServerAnalytics(
   range: AnalyticsTimeRange = "30d"
 ): Promise<AnalyticsPayload> {
-  await delay(120);
+  await delay(60);
 
-  const [tasks, workflows] = await Promise.all([
+  const [tasks, workflows, telemetry] = await Promise.all([
     getServerTasks(),
     getServerWorkflows(),
+    getServerTelemetry(),
   ]);
 
-  // Compute live task counts
+  // Compute live task counts directly from active Kanban board
   const doneTasks = tasks.filter((t) => t.status === "done").length;
-  const inProgressTasks = tasks.filter((t) => t.status === "in_progress").length;
-  const backlogTasks = tasks.filter((t) => t.status === "backlog" || t.status === "todo").length;
+  const inProgressTasks = tasks.filter(
+    (t) => t.status === "in_progress" || t.status === "in_review"
+  ).length;
+  const backlogTasks = tasks.filter(
+    (t) => t.status === "backlog" || t.status === "todo"
+  ).length;
+  const totalTasks = tasks.length;
 
   // Workflows stats
   const totalWorkflowRuns = workflows.reduce((acc, w) => acc + w.runsCount, 0);
@@ -38,7 +45,7 @@ export async function getServerAnalytics(
         )
       : 99.5;
 
-  // Timeline points based on range
+  // Timeline points based on range, with current period dynamically reflecting doneTasks
   let throughputTimeline: ThroughputDataPoint[] = [];
 
   if (range === "7d") {
@@ -49,7 +56,12 @@ export async function getServerAnalytics(
       { date: "Jue", label: "10 Sep", completed: 11, created: 14 },
       { date: "Vie", label: "11 Sep", completed: 18, created: 9 },
       { date: "Sáb", label: "12 Sep", completed: 14, created: 5 },
-      { date: "Dom", label: "13 Sep", completed: Math.max(doneTasks * 2, 9), created: 7 },
+      {
+        date: "Dom",
+        label: "Hoy (13 Sep)",
+        completed: Math.max(doneTasks * 3 + 4, 6),
+        created: 7,
+      },
     ];
   } else if (range === "90d") {
     throughputTimeline = [
@@ -58,7 +70,12 @@ export async function getServerAnalytics(
       { date: "Sem 5", label: "Ago 1-7", completed: 64, created: 52 },
       { date: "Sem 7", label: "Ago 15-21", completed: 71, created: 60 },
       { date: "Sem 9", label: "Sep 1-7", completed: 85, created: 68 },
-      { date: "Sem 11", label: "Sep 15-21", completed: 92, created: 74 },
+      {
+        date: "Sem 11",
+        label: "Esta semana",
+        completed: 75 + doneTasks * 4,
+        created: 74,
+      },
     ];
   } else {
     // 30d default
@@ -68,39 +85,47 @@ export async function getServerAnalytics(
       { date: "25 Ago", label: "Sem 3", completed: 29, created: 22 },
       { date: "30 Ago", label: "Sem 4", completed: 35, created: 28 },
       { date: "05 Sep", label: "Sem 5", completed: 42, created: 31 },
-      { date: "12 Sep", label: "Sem 6", completed: Math.max(doneTasks * 4, 38), created: 26 },
+      {
+        date: "12 Sep",
+        label: "Sem 6 (Actual)",
+        completed: 20 + doneTasks * 4,
+        created: 26,
+      },
     ];
   }
 
-  // Workload per user
-  const assigneeWorkload: AssigneeWorkloadData[] = DEMO_USERS.map((user, idx) => {
+  // Workload per user directly from real-time assigned tasks
+  const assigneeWorkload: AssigneeWorkloadData[] = DEMO_USERS.map((user) => {
     const userTasks = tasks.filter((t) => t.assignee?.id === user.id);
-    const userDone = userTasks.filter((t) => t.status === "done").length;
-    const userProg = userTasks.filter((t) => t.status === "in_progress").length;
-    const userBack = userTasks.filter((t) => t.status === "todo" || t.status === "backlog").length;
-
-    // Provide realistic baselines augmented with active tasks
-    const baselineDone = [18, 14, 4][idx] || 5;
-    const baselineProg = [4, 3, 1][idx] || 2;
-    const baselineBack = [6, 5, 2][idx] || 3;
+    const completed = userTasks.filter((t) => t.status === "done").length;
+    const inProgress = userTasks.filter(
+      (t) => t.status === "in_progress" || t.status === "in_review"
+    ).length;
+    const backlog = userTasks.filter(
+      (t) => t.status === "todo" || t.status === "backlog"
+    ).length;
+    const total = completed + inProgress + backlog;
 
     return {
       userId: user.id,
       userName: user.name,
       initials: user.initials,
-      completed: baselineDone + userDone,
-      inProgress: baselineProg + userProg,
-      backlog: baselineBack + userBack,
-      total: baselineDone + userDone + baselineProg + userProg + baselineBack + userBack,
+      completed,
+      inProgress,
+      backlog,
+      total: total > 0 ? total : 1,
     };
   });
 
-  // Priority breakdown
-  const urgentCount = tasks.filter((t) => t.priority === "urgent").length + 6;
-  const highCount = tasks.filter((t) => t.priority === "high").length + 18;
-  const mediumCount = tasks.filter((t) => t.priority === "medium").length + 32;
-  const lowCount = tasks.filter((t) => t.priority === "low").length + 14;
-  const totalPriorities = urgentCount + highCount + mediumCount + lowCount;
+  // Priority breakdown directly from real-time tasks
+  const urgentCount = tasks.filter((t) => t.priority === "urgent").length;
+  const highCount = tasks.filter((t) => t.priority === "high").length;
+  const mediumCount = tasks.filter((t) => t.priority === "medium").length;
+  const lowCount = tasks.filter((t) => t.priority === "low").length;
+  const totalPriorities = Math.max(
+    urgentCount + highCount + mediumCount + lowCount,
+    1
+  );
 
   const priorityBreakdown: PriorityBreakdownData[] = [
     {
@@ -108,94 +133,55 @@ export async function getServerAnalytics(
       label: "Urgente",
       count: urgentCount,
       percentage: Math.round((urgentCount / totalPriorities) * 100),
-      color: "hsl(0 84% 60%)", // Red
+      color: "hsl(0 84% 60%)",
     },
     {
       priority: "high",
       label: "Alta",
       count: highCount,
       percentage: Math.round((highCount / totalPriorities) * 100),
-      color: "hsl(38 92% 50%)", // Amber
+      color: "hsl(38 92% 50%)",
     },
     {
       priority: "medium",
       label: "Media",
       count: mediumCount,
       percentage: Math.round((mediumCount / totalPriorities) * 100),
-      color: "hsl(217 91% 60%)", // Blue
+      color: "hsl(217 91% 60%)",
     },
     {
       priority: "low",
       label: "Baja",
       count: lowCount,
       percentage: Math.round((lowCount / totalPriorities) * 100),
-      color: "hsl(220 14% 60%)", // Neutral gray
+      color: "hsl(220 14% 60%)",
     },
   ];
 
-  // Live telemetry feed
-  const liveTelemetry: TelemetryLog[] = [
-    {
-      id: "telem-1",
-      timestamp: "15:28:44",
-      actor: "Gabriel Gonçalves (Admin)",
-      action: "MUTATION_COMMIT",
-      target: "PATCH /api/tasks/NP-105",
-      latencyMs: 14,
-      status: "200 OK",
-    },
-    {
-      id: "telem-2",
-      timestamp: "15:28:40",
-      actor: "Nexus Workflow Engine",
-      action: "PIPELINE_RUN",
-      target: "POST /api/workflows/wf-1/run",
-      latencyMs: 24,
-      status: "200 OK",
-    },
-    {
-      id: "telem-3",
-      timestamp: "15:28:32",
-      actor: "Elena Rostova (PM)",
-      action: "OPTIMISTIC_INSERT",
-      target: "POST /api/tasks",
-      latencyMs: 18,
-      status: "201 Created",
-    },
-    {
-      id: "telem-4",
-      timestamp: "15:28:15",
-      actor: "Edge Middleware",
-      action: "SECURITY_HEADER_CHECK",
-      target: "GET /analytics",
-      latencyMs: 8,
-      status: "200 OK",
-    },
-    {
-      id: "telem-5",
-      timestamp: "15:27:58",
-      actor: "TanStack Query Cache",
-      action: "BACKGROUND_REVALIDATE",
-      target: "GET /api/workflows",
-      latencyMs: 12,
-      status: "304 Cached",
-    },
-  ];
+  // Dynamic cycle time: lower when more tasks are completed vs pending
+  const dynamicCycleTime = Number(
+    Math.max(2.4, 6.2 + inProgressTasks * 1.1 - doneTasks * 0.8).toFixed(1)
+  );
+
+  // Dynamic SLA compliance: rises with completed tasks
+  const dynamicSla = Number(
+    Math.min(99.9, 91.5 + (doneTasks / Math.max(totalTasks, 1)) * 8.2).toFixed(1)
+  );
 
   return {
     timeRange: range,
     overview: {
-      totalTasksCompleted: doneTasks + (range === "7d" ? 42 : range === "90d" ? 340 : 128),
-      tasksCompletedChange: range === "7d" ? 18.4 : 14.2,
-      avgCycleTimeHours: range === "7d" ? 11.2 : 14.6,
-      cycleTimeChange: -16.5,
+      totalTasksCompleted: doneTasks,
+      tasksCompletedChange: doneTasks > 2 ? 24.5 : 12.0,
+      avgCycleTimeHours: dynamicCycleTime,
+      cycleTimeChange: -18.4,
       workflowSuccessRate: avgWorkflowSuccess,
       workflowRuns: totalWorkflowRuns,
-      slaComplianceRate: 97.2,
+      slaComplianceRate: dynamicSla,
     },
     throughputTimeline,
     assigneeWorkload,
     priorityBreakdown,
-    liveTelemetry,
+    liveTelemetry: telemetry.slice(0, 10),
   };
 }
