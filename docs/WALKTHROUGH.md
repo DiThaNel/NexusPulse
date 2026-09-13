@@ -13,7 +13,8 @@ Este documento es el registro técnico oficial de **NexusPulse**. Aquí se docum
 5. [Capa de Seguridad: Edge Middleware, Cookies HttpOnly & Cabeceras HTTP](#capa-de-seguridad-edge-middleware-cookies-httponly--cabeceras-http)
 6. [Resiliencia Técnica: Resolución Definitiva de Hidratación SSR/CSR](#resiliencia-técnica-resolución-definitiva-de-hidratación-ssrcsr)
 7. [Fase 4: Gestión de Estado Asíncrono & Optimistic UI (TanStack Query v5)](#fase-4-gestión-de-estado-asíncrono--optimistic-ui-tanstack-query-v5)
-8. [Hoja de Ruta Actualizada para Próximas Fases](#hoja-de-ruta-actualizada-para-próximas-fases)
+8. [Fase 5: Motor de Workflows & Automatizaciones Operativas](#fase-5-motor-de-workflows--automatizaciones-operativas)
+9. [Hoja de Ruta Actualizada para Próximas Fases](#hoja-de-ruta-actualizada-para-próximas-fases)
 
 ---
 
@@ -195,6 +196,38 @@ Separar de forma limpia el estado del servidor (*Server State*) del estado de la
 
 ---
 
+## Fase 5: Motor de Workflows & Automatizaciones Operativas
+
+### Objetivos y Alcance
+Transformar la sección de `/workflows` en un motor completo e interactivo de automatizaciones orquestadas. Proporcionar diagramas visuales de pipelines por etapas (Trigger ➔ Condición ➔ Acción), simulación de ejecución en tiempo real con consola de telemetría y logs secuenciales, persistencia asíncrona mediante TanStack Query v5, validación en tiempo de ejecución con Zod y control estricto de accesos RBAC para perfiles *Viewer*.
+
+### Arquitectura y Componentes Clave
+* **Endpoints REST de Servidor (`src/app/api/workflows/`)**:
+  * `GET /api/workflows`: Listado dinámico con filtros por texto, estado (`active`, `paused`) y tipo de disparador (`webhook`, `cron`, `event`, `manual`).
+  * `POST /api/workflows`: Creación con validación estricta en tiempo de ejecución (Zod `workflowSchema`).
+  * `PATCH /api/workflows/[id]`: Alternancia optimista entre estados activo y pausado (`toggleStatus`).
+  * `DELETE /api/workflows/[id]`: Eliminación de automatizaciones.
+  * `POST /api/workflows/[id]/run`: Simulación de ejecución en vivo que genera logs temporizados de telemetría e incrementa las métricas de corrida.
+* **Repositorio en Memoria del Servidor (`src/lib/server-workflows.ts`)**:
+  * Sembrado con 4 pipelines de producción realistas:
+    1. *GitHub Sync & Deploy Trigger* (Webhook ➔ Regla de rama main y CI ➔ Despliegue en producción).
+    2. *Kanban Task SLA Escalation* (Evento de tarea > 48h ➔ Prioridad alta/urgente ➔ Alerta Slack #ops).
+    3. *Daily Operations Health Check* (Cron diario 00:00 UTC ➔ Ping de microservicios < 250ms ➔ Snapshot de telemetría).
+    4. *Done Task Telemetry Archival* (Evento de tarea completada ➔ Tag archival ➔ Escritura en BD).
+* **Hooks de TanStack Query v5 (`src/hooks/use-workflows-query.ts`)**:
+  * `useWorkflowsQuery(filters)`: Suscripción a la caché reactiva de automatizaciones.
+  * `useToggleWorkflowStatusMutation()`: Conmutación optimista (0ms) de estado con rollback automático ante fallo de red.
+  * `useRunWorkflowMutation()`: Ejecución en vivo e invalidación de caché reactiva.
+  * `useCreateWorkflowMutation()`: Inserción de nuevos flujos con validación.
+* **Componentes de Interfaz de Usuario**:
+  * **`WorkflowCard` (`src/components/workflows/workflow-card.tsx`)**: Tarjeta interactiva con badge dinámico, estadísticas de telemetría (tasa de éxito, ejecuciones totales, última corrida), conmutador de pausa/activación y botón de ejecución instantánea.
+  * **`WorkflowPipelineDrawer` (`src/components/workflows/workflow-pipeline-drawer.tsx`)**: Panel modal con animación Framer Motion que muestra el grafo secuencial de 3 etapas. Al pulsar `[Simular Ejecución en Tiempo Real]`, cada nodo se ilumina progresivamente con resplandor de ejecución y checkmarks esmeralda, mientras la consola inferior despliega logs con marcas de tiempo.
+  * **`WorkflowModal` (`src/components/workflows/workflow-modal.tsx`)**: Modal con física *spring* para la creación de automatizaciones validada con Zod.
+* **Seguridad y RBAC (Role-Based Access Control)**:
+  * El usuario *Lucas Silva* (Viewer) puede inspeccionar workflows y pipelines, pero los botones de creación, cambio de estado y ejecución en vivo están protegidos con candado (`Lock`) e inhabilitados.
+
+---
+
 ## Hoja de Ruta Actualizada para Próximas Fases
 
 * [x] **Fase 1: Arquitectura Base, Design System e i18n** *(Completado)*
@@ -202,9 +235,10 @@ Separar de forma limpia el estado del servidor (*Server State*) del estado de la
 * [x] **Fase 3: Tablero Kanban Interactivo & Zod Validation** *(Completado)*
 * [x] **Módulo de Seguridad: Edge Middleware, Cookies HttpOnly y Security Headers** *(Completado)*
 * [x] **Fase 4: Gestión de Estado Asíncrono & Optimistic UI (TanStack Query v5 & Animaciones de Modales)** *(Completado)*
-* [ ] **Fase 5: Motor de Workflows & Automatizaciones Operativas (Pipelines, Triggers de Eventos y Ejecución en Tiempo Real)**
+* [x] **Fase 5: Motor de Workflows & Automatizaciones Operativas (Pipelines, Triggers de Eventos y Ejecución en Tiempo Real)** *(Completado)*
 * [ ] **Fase 6: Métricas Operativas & Telemetría en Tiempo Real (Analytics Dashboard)**
 * [ ] **Fase 7: Suite de Testing Automatizado con Jest / React Testing Library & Vitest**
 * [ ] **Fase 8: Auditoría Final de Rendimiento, Optimización de Producción y Push Remoto a GitHub**
 * [ ] **Fase 9 (Hito Final): Versión Mobile App mediante Vía Híbrida / Empaquetado Nativo: Capacitor (Ionic)** *(Sincronización multiplataforma, feedback háptico en drag-and-drop, notificaciones push nativas y empaquetado para iOS/Android)*
+
 
