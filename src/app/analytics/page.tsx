@@ -1,105 +1,168 @@
 "use client";
 
+import * as React from "react";
 import { motion } from "framer-motion";
-import { BarChart3, ArrowUpRight } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import { AnalyticsTimeRange } from "@/types";
 import { useLanguage } from "@/components/language-provider";
+import { useAnalyticsQuery } from "@/hooks/use-analytics-query";
+import { KpiMetricCard } from "@/components/analytics/kpi-metric-card";
+import { ThroughputChart } from "@/components/analytics/throughput-chart";
+import { WorkloadBarChart } from "@/components/analytics/workload-bar-chart";
+import { PriorityDonutChart } from "@/components/analytics/priority-donut-chart";
+import { LiveTelemetryFeed } from "@/components/analytics/live-telemetry-feed";
+import { Button } from "@/components/ui/button";
+import {
+  BarChart3,
+  RefreshCw,
+  Clock,
+  CheckCircle2,
+  TrendingUp,
+  ShieldCheck,
+  Calendar,
+} from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export default function AnalyticsPage() {
   const { t } = useLanguage();
+  const [timeRange, setTimeRange] = React.useState<AnalyticsTimeRange>("30d");
 
-  const metrics = [
-    { label: "Throughput Total", value: "2.4M req", change: "+14.2%", detail: "Últimos 30 días" },
-    { label: "Latencia Promedio", value: "18ms", change: "-4.1%", detail: "Server Component Streaming" },
-    { label: "Disponibilidad del Sistema", value: "99.98%", change: "Óptimo", detail: "Sin incidentes reportados" },
-    { label: "Nodos de Ejecución", value: "16 activos", change: "+2", detail: "Autoescalado dinámico" },
-  ];
+  const {
+    data: analytics,
+    isLoading,
+    isFetching,
+    refetch,
+  } = useAnalyticsQuery(timeRange);
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
-      className="space-y-6 py-2"
-    >
-      {/* Header */}
+    <div className="space-y-6 py-2">
+      {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border/40 pb-4">
         <div>
-          <h1 className="text-xl sm:text-2xl font-semibold tracking-tight text-foreground flex items-center gap-2.5">
-            <BarChart3 className="h-5 w-5 text-indigo-500" />
-            {t.shell.nav.analytics}
-          </h1>
-          <p className="text-xs text-muted-foreground mt-0.5">
-            Métricas de rendimiento, latencia y observabilidad de flujos en tiempo real.
+          <div className="flex items-center gap-3">
+            <h1 className="text-xl sm:text-2xl font-semibold tracking-tight text-foreground flex items-center gap-2.5">
+              <BarChart3 className="h-5 w-5 text-indigo-500" />
+              <span>{t.analytics.title}</span>
+            </h1>
+
+            {/* Live Telemetry Badge */}
+            <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full border border-border/40 bg-card text-[11px] font-mono text-muted-foreground shadow-xs">
+              <span
+                className={cn(
+                  "h-1.5 w-1.5 rounded-full",
+                  isFetching
+                    ? "bg-amber-400 animate-pulse"
+                    : "bg-emerald-500 animate-pulse"
+                )}
+              />
+              <span>{t.analytics.liveBadge}</span>
+            </div>
+          </div>
+
+          <p className="text-xs text-muted-foreground mt-1">
+            {t.analytics.subtitle}
           </p>
         </div>
 
-        <Badge variant="outline" className="text-xs font-mono">
-          Fase 5: Recharts Integration
-        </Badge>
-      </div>
+        {/* Time Range Selector & Refresh */}
+        <div className="flex items-center gap-2">
+          {/* Segmented Time Range Buttons */}
+          <div className="flex items-center p-1 rounded-lg border border-border/60 bg-muted/30">
+            {(["7d", "30d", "90d"] as AnalyticsTimeRange[]).map((range) => (
+              <button
+                key={range}
+                onClick={() => setTimeRange(range)}
+                className={cn(
+                  "px-3 py-1 text-xs font-mono rounded-md transition-all",
+                  timeRange === range
+                    ? "bg-card text-foreground font-semibold shadow-xs border border-border/40"
+                    : "text-muted-foreground hover:text-foreground"
+                )}
+              >
+                {t.analytics.timeRanges[range]}
+              </button>
+            ))}
+          </div>
 
-      {/* Metrics Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
-        {metrics.map((m) => (
-          <div
-            key={m.label}
-            className="p-4 rounded-xl border border-border/50 bg-card/40 space-y-1.5"
+          {/* Refresh Button */}
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => refetch()}
+            disabled={isFetching}
+            className="h-8 w-8 p-0 border-border/60"
+            title="Refrescar métricas"
           >
-            <div className="text-xs text-muted-foreground font-medium">{m.label}</div>
-            <div className="text-2xl font-semibold tracking-tight text-foreground">
-              {m.value}
-            </div>
-            <div className="flex items-center justify-between pt-1 text-[11px] text-muted-foreground">
-              <span>{m.detail}</span>
-              <span className="text-emerald-500 font-medium flex items-center">
-                {m.change}
-                <ArrowUpRight className="h-3 w-3" />
-              </span>
-            </div>
-          </div>
-        ))}
+            <RefreshCw
+              className={cn(
+                "h-3.5 w-3.5 text-muted-foreground",
+                isFetching && "animate-spin"
+              )}
+            />
+          </Button>
+        </div>
       </div>
 
-      {/* Operations Performance Log */}
-      <div className="rounded-xl border border-border/50 bg-card/30 p-5 space-y-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="text-sm font-semibold text-foreground">Distribución de Carga</h2>
-            <p className="text-xs text-muted-foreground mt-0.5">
-              Rendimiento por región y tiempos de respuesta.
-            </p>
-          </div>
-          <Badge variant="outline" className="text-xs">
-            Live Stream
-          </Badge>
-        </div>
-
-        <div className="space-y-3 pt-2">
-          {[
-            { region: "Europe West (Frankfurt)", load: "42%", latency: "12ms", status: "Excelente" },
-            { region: "US East (N. Virginia)", load: "35%", latency: "24ms", status: "Excelente" },
-            { region: "Europe South (Madrid / Lisbon)", load: "18%", latency: "9ms", status: "Óptimo" },
-            { region: "Asia Pacific (Tokyo)", load: "5%", latency: "88ms", status: "Normal" },
-          ].map((r) => (
+      {/* KPI Cards Grid */}
+      {isLoading || !analytics ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+          {[1, 2, 3, 4].map((i) => (
             <div
-              key={r.region}
-              className="flex items-center justify-between p-3 rounded-lg border border-border/40 bg-card/50 text-xs"
-            >
-              <div className="space-y-0.5">
-                <div className="font-medium text-foreground">{r.region}</div>
-                <div className="text-[11px] text-muted-foreground">Carga distribuida: {r.load}</div>
-              </div>
-              <div className="flex items-center gap-4">
-                <span className="font-mono text-muted-foreground">{r.latency}</span>
-                <Badge variant="success" className="text-[10px] py-0 px-1.5">
-                  {r.status}
-                </Badge>
-              </div>
-            </div>
+              key={i}
+              className="h-28 rounded-xl border border-border/40 bg-card/20 animate-pulse"
+            />
           ))}
         </div>
-      </div>
-    </motion.div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+          <KpiMetricCard
+            label={t.analytics.kpi.throughput}
+            value={analytics.overview.totalTasksCompleted}
+            change={analytics.overview.tasksCompletedChange}
+            detail={t.analytics.kpi.throughputDetail}
+            icon={<TrendingUp className="h-4 w-4 text-emerald-500" />}
+          />
+
+          <KpiMetricCard
+            label={t.analytics.kpi.cycleTime}
+            value={`${analytics.overview.avgCycleTimeHours}h`}
+            change={analytics.overview.cycleTimeChange}
+            detail={t.analytics.kpi.cycleTimeDetail}
+            isInverseGood={true}
+            icon={<Clock className="h-4 w-4 text-blue-500" />}
+          />
+
+          <KpiMetricCard
+            label={t.analytics.kpi.workflowSuccess}
+            value={`${analytics.overview.workflowSuccessRate}%`}
+            detail={`${analytics.overview.workflowRuns.toLocaleString()} ejecuciones registradas`}
+            icon={<CheckCircle2 className="h-4 w-4 text-purple-500" />}
+          />
+
+          <KpiMetricCard
+            label={t.analytics.kpi.slaCompliance}
+            value={`${analytics.overview.slaComplianceRate}%`}
+            detail={t.analytics.kpi.slaComplianceDetail}
+            icon={<ShieldCheck className="h-4 w-4 text-indigo-500" />}
+          />
+        </div>
+      )}
+
+      {/* Charts Section */}
+      {analytics && (
+        <div className="space-y-4">
+          {/* Top Row: Throughput Chart & Workload Bar Chart */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <ThroughputChart data={analytics.throughputTimeline} />
+            <WorkloadBarChart data={analytics.assigneeWorkload} />
+          </div>
+
+          {/* Bottom Row: Priority Donut Chart & Live Telemetry Feed */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <PriorityDonutChart data={analytics.priorityBreakdown} />
+            <LiveTelemetryFeed logs={analytics.liveTelemetry} />
+          </div>
+        </div>
+      )}
+    </div>
   );
 }

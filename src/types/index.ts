@@ -100,6 +100,60 @@ export interface MetricCardData {
   iconName: string;
 }
 
+export type AnalyticsTimeRange = "7d" | "30d" | "90d";
+
+export interface ThroughputDataPoint {
+  date: string;
+  completed: number;
+  created: number;
+  label: string;
+}
+
+export interface AssigneeWorkloadData {
+  userId: string;
+  userName: string;
+  initials: string;
+  completed: number;
+  inProgress: number;
+  backlog: number;
+  total: number;
+}
+
+export interface PriorityBreakdownData {
+  priority: TaskPriority;
+  label: string;
+  count: number;
+  percentage: number;
+  color: string;
+}
+
+export interface TelemetryLog {
+  id: string;
+  timestamp: string;
+  actor: string;
+  action: string;
+  target: string;
+  latencyMs: number;
+  status: "200 OK" | "201 Created" | "304 Cached" | "500 Error";
+}
+
+export interface AnalyticsPayload {
+  timeRange: AnalyticsTimeRange;
+  overview: {
+    totalTasksCompleted: number;
+    tasksCompletedChange: number;
+    avgCycleTimeHours: number;
+    cycleTimeChange: number;
+    workflowSuccessRate: number;
+    workflowRuns: number;
+    slaComplianceRate: number;
+  };
+  throughputTimeline: ThroughputDataPoint[];
+  assigneeWorkload: AssigneeWorkloadData[];
+  priorityBreakdown: PriorityBreakdownData[];
+  liveTelemetry: TelemetryLog[];
+}
+
 export interface ActivityEvent {
   id: string;
   actor: User;

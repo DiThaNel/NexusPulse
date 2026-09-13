@@ -14,7 +14,8 @@ Este documento es el registro técnico oficial de **NexusPulse**. Aquí se docum
 6. [Resiliencia Técnica: Resolución Definitiva de Hidratación SSR/CSR](#resiliencia-técnica-resolución-definitiva-de-hidratación-ssrcsr)
 7. [Fase 4: Gestión de Estado Asíncrono & Optimistic UI (TanStack Query v5)](#fase-4-gestión-de-estado-asíncrono--optimistic-ui-tanstack-query-v5)
 8. [Fase 5: Motor de Workflows & Automatizaciones Operativas](#fase-5-motor-de-workflows--automatizaciones-operativas)
-9. [Hoja de Ruta Actualizada para Próximas Fases](#hoja-de-ruta-actualizada-para-próximas-fases)
+9. [Fase 6: Métricas Operativas & Telemetría en Tiempo Real (Analytics Dashboard)](#fase-6-métricas-operativas--telemetría-en-tiempo-real-analytics-dashboard)
+10. [Hoja de Ruta Actualizada para Próximas Fases](#hoja-de-ruta-actualizada-para-próximas-fases)
 
 ---
 
@@ -38,7 +39,8 @@ A continuación se detalla cada una de las tecnologías, librerías y herramient
 | **Next-Themes & ThemeProvider React 19** | `0.4.6` | **Gestión de Modo Claro / Oscuro**: Control nativo de la clase `.dark` en el elemento raíz `<html>` sincronizado con `localStorage` y compatible al 100% con la arquitectura de hidratación de React 19 sin scripts inline vulnerables. |
 | **Bilingual i18n Engine (Propio)** | Nativo | **Internacionalización Bilingüe**: Contexto tipado sin dependencias externas pesadas con soporte completo para Español e Inglés, persistencia local y alternancia reactiva en tiempo real. |
 | **Edge Middleware & Security Headers** | Nativo Next.js | **Capa de Seguridad Perimetral**: Protección de rutas privadas (`/board`, `/workflows`, `/analytics`, `/settings`), cookies de sesión seguras con `HttpOnly`, `SameSite=Strict`, e inyección de encabezados HTTP defensivos (CSP, HSTS, X-Frame-Options: DENY). |
-| **Capacitor (Ionic) [Fase 6 Programada]** | *Próxima* | **Vía Híbrida / Empaquetado Nativo Móvil**: Empaquetado de la aplicación Next.js en ejecutables nativos para iOS y Android, permitiendo acceso a APIs reales del dispositivo (vibración háptica al soltar tarjetas Kanban, notificaciones push nativas y gestión de barra de estado). |
+| **Zero-Hydration SVG Charts Engine** | Nativo / Framer Motion | **Motor de Visualización Analítica**: Gráficos vectoriales SVG puros con curvas Bezier cúbicas, áreas degradadas, anillos trigonométricos (`strokeDasharray`) y tooltips interactivos flotantes sin desajustes de hidratación SSR/CSR. |
+| **Capacitor (Ionic) [Fase 9 Programada]** | *Próxima* | **Vía Híbrida / Empaquetado Nativo Móvil**: Empaquetado de la aplicación Next.js en ejecutables nativos para iOS y Android, permitiendo acceso a APIs reales del dispositivo (vibración háptica al soltar tarjetas Kanban, notificaciones push nativas y gestión de barra de estado). |
 | **Robocopy (Robust File Copy)** | Sistema Windows | **Sincronización Segura de Repositorio**: Espejeado exacto entre el entorno de trabajo sandbox (`scratch\nexus-pulse`) y el repositorio de escritorio (`Desktop\NexusPulse`), excluyendo directorios pesados (`.git`, `.next`, `node_modules`). |
 | **Git (Local Version Control)** | Sistema | **Control de Versiones Riguroso**: Historial atómico paso a paso siguiendo la convención de commits (`feat`, `style`, `fix`, `docs`), reteniendo el código 100% en local sin ejecutar push remoto a GitHub hasta la fase final. |
 
@@ -228,6 +230,45 @@ Transformar la sección de `/workflows` en un motor completo e interactivo de au
 
 ---
 
+## Fase 6: Métricas Operativas & Telemetría en Tiempo Real (Analytics Dashboard)
+
+### Objetivos y Alcance
+Implementar un centro de mando analítico y de telemetría de nivel senior en `/analytics`. La arquitectura visual y funcional proporciona visibilidad en tiempo real sobre el rendimiento del equipo, la velocidad de entrega y la salud operativa del sistema, garantizando **cero desajustes de hidratación (Zero Hydration Mismatch)** mediante gráficos vectoriales SVG puros calculados de forma determinista y renderizados sin depender de mediciones de contenedor del lado del cliente.
+
+### Arquitectura y Componentes Clave
+* **Tipos de Dominio y Contratos Tipados (`src/types/index.ts`)**:
+  * `AnalyticsTimeRange`: Ventanas de tiempo parametrizadas (`7d`, `30d`, `90d`).
+  * `AnalyticsPayload`: Estructura unificada que agrupa KPIs (`totalThroughput`, `activeWorkflows`, `avgCycleTimeHours`, `systemHealthPct`), series temporales (`throughputTrend`), distribución de carga por colaborador (`workloadByAssignee`), desglose de prioridades (`priorityBreakdown`) y registro de eventos (`telemetryLogs`).
+* **Motor de Análisis de Servidor (`src/lib/server-analytics.ts`)**:
+  * Algoritmo de agregación en memoria que procesa dinámicamente las tareas del tablero Kanban (`serverTasks`) y las automatizaciones activas (`serverWorkflows`).
+  * Generación determinista y adaptativa de curvas de *throughput* según la ventana seleccionada (7 puntos para 7 días, 10 puntos para 30 días, 12 puntos para 90 días).
+  * Desglose proporcional de prioridades con cálculo de ángulos trigonométricos (`strokeDasharray` / `strokeDashoffset`) y porcentajes normalizados.
+  * Stream de telemetría operativa en vivo con latencias de red realistas (8ms - 24ms), códigos de estado HTTP (200, 201, 304) y sellos de tiempo formateados.
+* **Endpoint REST de Telemetría (`src/app/api/analytics/route.ts`)**:
+  * `GET /api/analytics?range=7d|30d|90d`: Validación de parámetros, procesamiento instantáneo y respuesta estructurada con cabeceras `Cache-Control`.
+* **Hook Reactivo con TanStack Query v5 (`src/hooks/use-analytics-query.ts`)**:
+  * `useAnalyticsQuery(range)`: Suscripción a la clave reactiva `['analytics', range]`, permitiendo que cada intervalo de tiempo mantenga su propia caché caliente. El cambio entre 7d, 30d y 90d es instantáneo una vez cargado, sin parpadeos de carga ni retrasos de red.
+* **Componentes de Visualización de Datos (Zero-Hydration SVG)**:
+  * **`KpiMetricCard` (`src/components/analytics/kpi-metric-card.tsx`)**: Tarjetas de métricas clave con badges de tendencia porcentual. Implementa polaridad inversa automática (los incrementos en tiempo de ciclo se marcan como advertencia ámbar, mientras que en throughput o salud del sistema se marcan como positivos esmeralda).
+  * **`ThroughputChart` (`src/components/analytics/throughput-chart.tsx`)**: Gráfico de área y línea continua con curvas Bezier cúbicas suaves (`C`), relleno con gradiente lineal semitransparente, ejes horizontales con marcas de tiempo y **tooltips flotantes interactivos basados en Framer Motion** que muestran valores exactos al pasar el cursor sobre cualquier nodo.
+  * **`WorkloadBarChart` (`src/components/analytics/workload-bar-chart.tsx`)**: Gráfico horizontal de barras segmentadas que desglosa la carga de tareas de cada miembro del equipo (*Completadas* vs *Pendientes*), con avatares de usuario y proporciones visuales precisas.
+  * **`PriorityDonutChart` (`src/components/analytics/priority-donut-chart.tsx`)**: Anillo SVG interactivo con segmentación angular calculada mediante trigonometría limpia. Incluye interacción al pasar el cursor (`hover`) con resaltado de borde, aumento de grosor y foco dinámico en la leyenda lateral.
+  * **`LiveTelemetryFeed` (`src/components/analytics/live-telemetry-feed.tsx`)**: Feed de eventos en tiempo real con latencias en milisegundos, badges semánticos de estado HTTP, indicador de pulso en vivo verde esmeralda y capacidad de actualización manual.
+* **Ensamblado y Página Central (`src/app/analytics/page.tsx`)**:
+  * Selector de rango temporal segmentado (`7 Días`, `30 Días`, `90 Días`) con transiciones suaves.
+  * Cabecera con indicador de estado "Sistemas Operativos 100%" y sincronización reactiva en tiempo real.
+  * Soporte bilingüe integral (ES/EN) con todas las claves de localización registradas en `src/locales/es.ts` y `src/locales/en.ts`.
+
+### Validación y Verificación Técnica
+* **Compilación y Build de Producción**: 15 rutas estáticas y dinámicas compiladas sin errores con `npm run build` (0 errores de TypeScript, 0 warnings de ESLint).
+* **Inspección en Navegador y Cero Hydration Mismatch**: Verificación interactiva completa con subagente de navegador:
+  * Hover interactivo sobre puntos del gráfico de área con tooltip dinámico de Framer Motion.
+  * Transición fluida entre rangos de tiempo (7d, 30d, 90d) con re-cálculo determinista de curvas.
+  * Resaltado interactivo de segmentos del gráfico de dona al pasar el cursor sobre las prioridades.
+  * Consola del navegador auditada con 0 errores y 0 discrepancias de hidratación.
+
+---
+
 ## Hoja de Ruta Actualizada para Próximas Fases
 
 * [x] **Fase 1: Arquitectura Base, Design System e i18n** *(Completado)*
@@ -236,9 +277,10 @@ Transformar la sección de `/workflows` en un motor completo e interactivo de au
 * [x] **Módulo de Seguridad: Edge Middleware, Cookies HttpOnly y Security Headers** *(Completado)*
 * [x] **Fase 4: Gestión de Estado Asíncrono & Optimistic UI (TanStack Query v5 & Animaciones de Modales)** *(Completado)*
 * [x] **Fase 5: Motor de Workflows & Automatizaciones Operativas (Pipelines, Triggers de Eventos y Ejecución en Tiempo Real)** *(Completado)*
-* [ ] **Fase 6: Métricas Operativas & Telemetría en Tiempo Real (Analytics Dashboard)**
+* [x] **Fase 6: Métricas Operativas & Telemetría en Tiempo Real (Analytics Dashboard)** *(Completado)*
 * [ ] **Fase 7: Suite de Testing Automatizado con Jest / React Testing Library & Vitest**
 * [ ] **Fase 8: Auditoría Final de Rendimiento, Optimización de Producción y Push Remoto a GitHub**
 * [ ] **Fase 9 (Hito Final): Versión Mobile App mediante Vía Híbrida / Empaquetado Nativo: Capacitor (Ionic)** *(Sincronización multiplataforma, feedback háptico en drag-and-drop, notificaciones push nativas y empaquetado para iOS/Android)*
+
 
 
